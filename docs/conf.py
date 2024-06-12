@@ -28,9 +28,9 @@ copyright = ("2024, Jackson Halpin. Project structure based on the "
 author = 'Jackson Halpin'
 
 # The short X.Y version
-version = ''
+version = '0.1.0'
 # The full version, including alpha/beta/rc tags
-release = ''
+release = '0.1.0'
 
 
 # -- General configuration ---------------------------------------------------
