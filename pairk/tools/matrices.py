@@ -7,12 +7,40 @@ from importlib_resources import files
 
 # MATRIX_DIR = Path(str(files('pairk.matrices')))
 # AVAILABLE_MATRIX_FILES = {i.stem: i for i in MATRIX_DIR.glob("*") if not i.name.endswith(".py") and not i.name.startswith("__")}
-AVAILABLE_MATRIX_FILES = {i.stem: i for i in files('pairk.data.matrices').iterdir()}
+AVAILABLE_MATRIX_FILES = {i.stem: i for i in files("pairk.data.matrices").iterdir()}
 
-BIOPYTHON_MATRICES = Align.substitution_matrices.load()
-AA_ORDER = ['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W','Y','V','B','Z','X','*']
+BIOPYTHON_MATRICES = Align.substitution_matrices.load()  # type: ignore
+AA_ORDER = [
+    "A",
+    "R",
+    "N",
+    "D",
+    "C",
+    "Q",
+    "E",
+    "G",
+    "H",
+    "I",
+    "L",
+    "K",
+    "M",
+    "F",
+    "P",
+    "S",
+    "T",
+    "W",
+    "Y",
+    "V",
+    "B",
+    "Z",
+    "X",
+    "*",
+]
 
-def convert_matrix_array_2_df(matrix_array: Align.substitution_matrices.Array) -> pd.DataFrame:
+
+def convert_matrix_array_2_df(
+    matrix_array: Align.substitution_matrices.Array,  # type: ignore
+) -> pd.DataFrame:
     # convert to pandas dataframe
     aas = list(set([i[0] for i in matrix_array.keys()]))
     # sort aas to match the order in AA_ORDER
@@ -27,29 +55,31 @@ def convert_matrix_array_2_df(matrix_array: Align.substitution_matrices.Array) -
 def load_matrix_as_df(matrix_name: str) -> pd.DataFrame:
     # convert to pandas dataframe
     if matrix_name in BIOPYTHON_MATRICES:
-        mat = Align.substitution_matrices.load(matrix_name)
-        return convert_matrix_array_2_df(mat)
+        mat = Align.substitution_matrices.load(matrix_name)  # type: ignore
+        return convert_matrix_array_2_df(mat)  # type: ignore
     try:
-        mat = Align.substitution_matrices.read(AVAILABLE_MATRIX_FILES[matrix_name])
+        mat = Align.substitution_matrices.read(AVAILABLE_MATRIX_FILES[matrix_name])  # type: ignore
         return convert_matrix_array_2_df(mat)
     except AssertionError:
         return pd.read_csv(AVAILABLE_MATRIX_FILES[matrix_name], index_col=0)
 
 
-def load_matrix_for_aligner(matrix_name: str) -> pd.DataFrame:
+def load_matrix_for_aligner(matrix_name: str) -> Align.substitution_matrices.Array:  # type: ignore
     # convert to pandas dataframe
     if matrix_name in BIOPYTHON_MATRICES:
-        return Align.substitution_matrices.load(matrix_name)
+        return Align.substitution_matrices.load(matrix_name)  # type: ignore
     try:
-        return Align.substitution_matrices.read(AVAILABLE_MATRIX_FILES[matrix_name])
+        return Align.substitution_matrices.read(AVAILABLE_MATRIX_FILES[matrix_name])  # type: ignore
     except AssertionError:
-        raise ValueError(f"matrix {matrix_name}: ({AVAILABLE_MATRIX_FILES[matrix_name]}) is probably not compatible with Bio.Align Aligner")
+        raise ValueError(
+            f"matrix {matrix_name}: ({AVAILABLE_MATRIX_FILES[matrix_name]}) is probably not compatible with Bio.Align Aligner"
+        )
 
 
 def matrix_df_to_dict(matrix_df: pd.DataFrame) -> dict[str, dict[str, float]]:
-    '''
+    """
     It's much faster to access a dictionary than a pandas dataframe
-    '''
+    """
     matrix_dict = {}
     for i, row in matrix_df.iterrows():
         if i in matrix_dict:
@@ -66,4 +96,4 @@ def print_available_matrices():
         print(k)
     print("\nother matrices:")
     for k, v in AVAILABLE_MATRIX_FILES.items():
-        print(f'{k}\n - {v}')
+        print(f"{k}\n - {v}")
