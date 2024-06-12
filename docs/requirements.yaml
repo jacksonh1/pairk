@@ -16,7 +16,7 @@ dependencies:
   - sphinxcontrib-jsmath
   - sphinxcontrib-qthelp
   - sphinxcontrib-serializinghtml
-
+  - pydata-sphinx-theme
     # Pip-only installs
   - pip:
     - -e ../
