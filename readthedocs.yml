@@ -1,15 +1,22 @@
 # readthedocs.yml
+  # image: latest
 
 version: 2
 
 build:
-  image: latest
+  os: ubuntu-22.04
+  tools:
+    python: "3.12"
 
-python:
-  version: 3.8
-  install:
-    - method: pip
-      path: .
+# python:
+#   version: 3.8
+#   install:
+#     - method: pip
+#       path: .
 
 conda:
   environment: docs/requirements.yaml
+
+
+
+# Set the OS, Python version and other tools you might need
