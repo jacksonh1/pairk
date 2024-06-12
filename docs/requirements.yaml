@@ -1,14 +1,20 @@
 name: docs_pairk
 channels:
-
   - defaults
+
 dependencies:
     # Base depends
   - python
   - pip
-  
-
-
+  - sphinx
+  - sphinx-copybutton
+  - sphinx-design
+  - sphinxcontrib-applehelp
+  - sphinxcontrib-devhelp
+  - sphinxcontrib-htmlhelp
+  - sphinxcontrib-jsmath
+  - sphinxcontrib-qthelp
+  - sphinxcontrib-serializinghtml
 
     # Pip-only installs
   - pip:
