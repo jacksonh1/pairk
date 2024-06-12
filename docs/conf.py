@@ -56,6 +56,7 @@ extensions = [
 
 
 autosummary_generate = True
+napoleon_numpy_docstring = True
 napoleon_google_docstring = False
 napoleon_use_param = False
 napoleon_use_ivar = True
@@ -94,6 +95,7 @@ pygments_style = 'default'
 # a list of builtin themes.
 #
 html_theme = 'pydata_sphinx_theme'
+# html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

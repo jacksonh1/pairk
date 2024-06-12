@@ -9,6 +9,10 @@ build:
     python: "miniconda3-4.7"
   # image: latest
 
+formats:
+  - pdf
+
+
 python:
   install:
     - method: pip
