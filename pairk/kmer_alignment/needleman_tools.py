@@ -23,7 +23,7 @@ def kmer_align_aligner(
     return alignment
 
 
-def score_kmer_2_seq_no_gaps_needleman(
+def score_kmer_2_seq_needleman(
     kmer: str,
     sequence: str,
     aligner: Align.PairwiseAligner,
