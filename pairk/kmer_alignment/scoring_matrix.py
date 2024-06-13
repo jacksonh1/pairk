@@ -46,6 +46,57 @@ def best_from_scores(sequence: str, scores: list[float], k):
     return bestscore, best_subseq, int(best_match_pos)
 
 
+def pairk_alignment_single_kmer(
+    kmer: str,
+    ortholog_idrs: dict[str, str],
+    score_matrix_dict: dict[str, dict[str, float | int]],
+):
+    '''
+    Align a kmer to a dictionary of sequences and return the best scoring subsequence for each sequence in the dictionary.
+
+    Parameters
+    ----------
+    kmer : str
+        the kmer to align
+    ortholog_idrs : dict[str, str]
+        a dictionary of sequences to align the kmer to, with the key being the sequence id and the value being the sequence as a string
+    score_matrix_dict : dict[str, dict[str, float | int]]
+        the scoring matrix to use for the alignment
+
+    Returns
+    -------
+    dict[str, float], dict[str, str], dict[str, int]
+        the best scores, best subsequences, and best positions for the kmer in each sequence in the input `ortholog_idrs` dictionary
+    '''
+    best_scores = {}
+    best_subseqs = {}
+    best_positions = {}
+    for ortholog_id, ortholog_idr in ortholog_idrs.items():
+        if len(ortholog_idr) < len(kmer):
+            best_subseqs[ortholog_id] = "-" * len(kmer)
+            continue
+        try:
+            ref_k_scores = score_kmer_2_seq_dict_dict(
+                kmer, ortholog_idr, score_matrix_dict
+            )
+            best_score, best_subseq, best_pos = best_from_scores(
+                ortholog_idr, ref_k_scores, len(kmer)
+            )
+        except ValueError as e:
+            best_subseqs[ortholog_id] = "-" * len(kmer)
+            print(e)
+            continue
+        except KeyError as e:
+            best_subseqs[ortholog_id] = "-" * len(kmer)
+            print(e)
+            continue
+        best_scores[ortholog_id] = best_score
+        best_subseqs[ortholog_id] = best_subseq
+        best_positions[ortholog_id] = best_pos
+    return best_scores, best_subseqs, best_positions
+
+
+
 def run_pairwise_kmer_alignment(
     ref_idr: str,
     ortholog_idrs: dict[str, str],
