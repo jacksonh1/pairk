@@ -35,7 +35,3 @@ import pairk.kmer_alignment.needleman_tools as needleman_tools
 from pathlib import Path
 from pairk.kmer_alignment.scoring_matrix_needleman import pairk_alignment_needleman
 from pairk.kmer_alignment.scoring_matrix import pairk_alignment
-
-
-def pairwise_kmer_alignment():
-    pass

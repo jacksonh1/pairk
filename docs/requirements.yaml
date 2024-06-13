@@ -8,6 +8,7 @@ dependencies:
   - python
   - pip
   - sphinx
+  - sphinx-rtd-theme
   - sphinx-design
   - sphinx-copybutton
   - sphinxcontrib-applehelp

@@ -6,6 +6,7 @@ import pairk.tools.sequence_utils as tools
 import pairk.tools.matrices as matrices
 import pairk.tools.pairwise_tools as pairwise_tools
 import copy
+import pairk.exceptions as _exceptions
 
 
 def score_alignment(
@@ -118,20 +119,6 @@ def pairk_alignment(
 ) -> dict[str, pd.DataFrame]:
     """run pairwise k-mer alignment method using an exhaustive comparison of k-mers. Each reference k-mer is scored against each ortholog k-mer to find the best matching ortholog k-mer in each ortholog.
 
-    generates pairk alignment matrices for the input sequences. The matrices include:
-    - score_dataframe: the alignment scores for each k-mer in the reference sequence against the corresponding best matching ortholog k-mer.
-        - columns: "reference_kmer" + ortholog sequence ids
-        - index: k-mer start position in the reference sequence
-    - subseq_dataframe: the best scoring k-mer from each ortholog for each reference k-mer.
-        - columns: "reference_kmer" + ortholog sequence ids
-        - index: k-mer start position in the reference sequence
-    - position_dataframe: the start position of the best scoring k-mer from each ortholog for each reference k-mer.
-        - columns: "reference_kmer" + ortholog sequence ids
-        - index: k-mer start position in the reference sequence
-    - reciprocal_best_match_dataframe: a boolean dataframe indicating whether the reference k-mer is the reciprocal best scoring k-mer to the ortholog k-mer. The best scoring ortholog k-mer is aligned to the reference sequence to determine if the best matching reference k-mer is the same as the original reference k-mer.
-        - columns: "reference_kmer" + ortholog sequence ids
-        - index: k-mer start position in the reference sequence
-
     Parameters
     ----------
     idr_dict_in : dict[str, str]
@@ -141,13 +128,20 @@ def pairk_alignment(
     k : int
         the length of the k-mers to use for the alignment
     matrix_name : str, optional
-        The name of the scoring matrix to use in the algorithm. The available matrices can be viewed with the function `print_available_matrices()` in pairk.tools.matrices. by default "EDSSMat50"
+        The name of the scoring matrix to use in the algorithm, by default "EDSSMat50". The available matrices can be viewed with the function `print_available_matrices()` in `pairk.tools.matrices`.
 
     Returns
     -------
     dict[str, pd.DataFrame]
-        results of the pairwise alignment in dictionary format, where the keys are the names of the dataframes and the values are the dataframes
+        results of the pairwise alignment in dictionary format, where the keys are the names of the dataframes and the values are the dataframes. All dataframes have the same structure. One column is the reference k-mer sequence ('reference_kmer'). The other columns are named as the ortholog sequence ids. The dataframe indexes are the reference k-mer start position in the reference sequence. The returned dataframes are:\n
+        - 'score_dataframe': the alignment scores for each k-mer in the reference sequence against the corresponding best matching ortholog k-mer.
+        - 'subseq_dataframe': the best scoring k-mer from each ortholog for each reference k-mer.
+        - 'position_dataframe': the start position of the best scoring k-mer from each ortholog for each reference k-mer.
+        - 'reciprocal_best_match_dataframe': a boolean dataframe indicating whether the reference k-mer is the reciprocal best scoring k-mer to the ortholog k-mer.
+
     """
+    _exceptions.validate_matrix_name(matrix_name)
+    _exceptions.check_refid_in_idr_dict(idr_dict_in, reference_id)
     idr_dict = copy.deepcopy(idr_dict_in)
     ref_idr = idr_dict.pop(reference_id)
     scoremat_df = matrices.load_matrix_as_df(matrix_name)
