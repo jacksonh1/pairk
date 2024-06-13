@@ -18,6 +18,7 @@ dependencies:
   - sphinxcontrib-qthelp
   - sphinxcontrib-serializinghtml
   - pydata-sphinx-theme
+  - numpy
     # Pip-only installs
   - pip:
     - -e ../

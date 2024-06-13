@@ -26,7 +26,7 @@ dependencies = [
 
 # Update the urls once the hosting is set up.
 #[project.urls]
-#"Source" = "https://github.com/<username>/pairk/"
+#"Source" = "https://github.com/jacksonh1/pairk/"
 #"Documentation" = "https://pairk.readthedocs.io/"
 
 [project.optional-dependencies]
