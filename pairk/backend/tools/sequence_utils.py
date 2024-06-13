@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from Bio import Align, AlignIO, Seq, SeqIO
 from Bio.SeqRecord import SeqRecord
-from pairk.tools import alignment_tools as aln_tools
+from pairk.backend.tools import alignment_tools as aln_tools
 
 
 def get_first_non_gap_index(s: str) -> int:

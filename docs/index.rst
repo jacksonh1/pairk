@@ -6,6 +6,9 @@
 Welcome to pairk's documentation!
 =========================================================
 
+[repository link](https://github.com/jacksonh1/pairk)
+
+
 .. grid:: 1 1 2 2
 
     .. grid-item-card:: Getting Started

@@ -55,6 +55,7 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx_design",
     "sphinx_copybutton",
+    # "sphinxcontrib.pseudocode",
 ]
 
 

@@ -22,8 +22,10 @@ dependencies:
   - pandas
   - biopython
   - importlib-resources
+  - seaborn
     # Pip-only installs
   - pip:
     - -e ../
     - alfpy
-
+    - logomaker
+    # - sphinxcontrib-pseudocode

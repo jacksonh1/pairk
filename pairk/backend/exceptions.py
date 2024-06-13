@@ -1,4 +1,4 @@
-import pairk.tools.matrices as matrices
+import pairk.backend.tools.matrices as matrices
 
 
 class InvalidKeywordValue(Exception):
@@ -17,8 +17,8 @@ def validate_matrix_name(matrix_name):
             )
 
 
-def check_refid_in_idr_dict(idr_dict_in, reference_id):
-    if reference_id not in idr_dict_in:
+def check_queryid_in_idr_dict(idr_dict_in, query_id):
+    if query_id not in idr_dict_in:
         raise ValueError(
-            f"reference_id '{reference_id}' not found in the idr_dict_in dictionary"
+            f"query_id '{query_id}' not found in the idr_dict_in dictionary"
         )
