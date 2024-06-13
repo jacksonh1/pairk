@@ -19,7 +19,9 @@ dependencies:
   - sphinxcontrib-serializinghtml
   - pydata-sphinx-theme
   - numpy
+  - pandas
     # Pip-only installs
   - pip:
     - -e ../
+    - alfpy
 
