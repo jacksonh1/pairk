@@ -19,6 +19,6 @@ dependencies:
 
     # Pip-only installs
   - pip:
-   - logomaker
-   - alfpy
+    - logomaker
+    - alfpy
 
