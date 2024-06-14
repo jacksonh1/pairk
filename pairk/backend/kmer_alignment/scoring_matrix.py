@@ -24,11 +24,6 @@ def score_kmer_2_seq_dict_dict(
     sequence: str,
     substitution_matrix_dict: dict[str, dict[str, float | int]],
 ):
-    """
-    best_score = np.max(scores)
-    best_position = np.argmax(scores)
-    best_subseq = sequence[best_position : best_position + len(kmer)]
-    """
     if len(sequence) < len(kmer):
         raise ValueError("The sequence is shorter than the kmer")
     scores = []
@@ -51,7 +46,6 @@ def run_pairwise_kmer_alignment(
     ortholog_idrs: dict[str, str],
     k: int,
     score_matrix_dict: dict[str, dict[str, float | int]],
-    rbm: bool = False,
 ):
     kmers = tools.gen_kmers(query_idr, k)
     positions = list(range(len(kmers)))
@@ -65,55 +59,24 @@ def run_pairwise_kmer_alignment(
     pos_df = pairwise_tools.make_empty_kmer_ortho_df(
         positions, list(ortholog_idrs.keys())
     )
-    rbm_df = pairwise_tools.make_empty_kmer_ortho_df(
-        positions, list(ortholog_idrs.keys())
-    )
     score_df.loc[positions, "query_kmer"] = kmers
     orthokmer_df.loc[positions, "query_kmer"] = kmers
     pos_df.loc[positions, "query_kmer"] = kmers
-    if rbm:
-        rbm_df.loc[positions, "query_kmer"] = kmers
-    else:
-        rbm_df = None
     for position, kmer in zip(positions, kmers):
         for ortholog_id, ortholog_idr in ortholog_idrs.items():
             if len(ortholog_idr) < k:
                 orthokmer_df.loc[position, ortholog_id] = "-" * k
                 continue
-            try:
-                query_k_scores = score_kmer_2_seq_dict_dict(
-                    kmer, ortholog_idr, score_matrix_dict
-                )
-                best_score, best_subseq, best_pos = best_from_scores(
-                    ortholog_idr, query_k_scores, k
-                )
-            except ValueError as e:
-                orthokmer_df.loc[position, ortholog_id] = "-" * k
-                print(e)
-                continue
-            except KeyError as e:
-                orthokmer_df.loc[position, ortholog_id] = "-" * k
-                print(e)
-                continue
+            query_k_scores = score_kmer_2_seq_dict_dict(
+                kmer, ortholog_idr, score_matrix_dict
+            )
+            best_score, best_subseq, best_pos = best_from_scores(
+                ortholog_idr, query_k_scores, k
+            )
             score_df.loc[position, ortholog_id] = best_score
             orthokmer_df.loc[position, ortholog_id] = best_subseq
             pos_df.loc[position, ortholog_id] = best_pos
-            if rbm:
-                try:
-                    rec_scores = score_kmer_2_seq_dict_dict(
-                        best_subseq, query_idr, score_matrix_dict
-                    )
-                    reci_best_score, reci_best_subseq, _ = best_from_scores(
-                        query_idr, rec_scores, k
-                    )
-                except ValueError as e:
-                    print(e)
-                    continue
-                except KeyError as e:
-                    print(e)
-                    continue
-                rbm_df.loc[position, ortholog_id] = reci_best_subseq == kmer  # type: ignore
-    return score_df, orthokmer_df, pos_df, rbm_df
+    return score_df, orthokmer_df, pos_df
 
 
 def pairk_alignment(
@@ -121,7 +84,6 @@ def pairk_alignment(
     query_id: str,
     k: int,
     matrix_name: str = "EDSSMat50",
-    rbm: bool = False,
 ) -> pairwise_tools.PairkAln:
     """run pairwise k-mer alignment method using an exhaustive comparison of k-mers. Each query k-mer is scored against each ortholog k-mer to find the best matching ortholog k-mer in each ortholog.
 
@@ -137,14 +99,6 @@ def pairk_alignment(
         The name of the scoring matrix to use in the algorithm, by default "EDSSMat50".
         The available matrices can be viewed with the function `print_available_matrices()`
         in `pairk.backend.tools.matrices`.
-    rbm : bool, optional
-        whether to calculate the reciprocal best match (RBM) for each k-mer, by default False.
-        It true, the RBM matrix will be calculated by aligning the best scoring
-        ortholog k-mer to the query sequence and checking if the best
-        scoring query k-mer is the same as the original query k-mer.
-        This is currently unused in the pairk package. The RBM matrix will be
-        included in the output `PairkAln` object, it is a boolean dataframe
-        indicating whether the query k-mer ortholog k-mer match is reciprocal.
 
     Returns
     -------
@@ -158,14 +112,13 @@ def pairk_alignment(
     idr_dict = copy.deepcopy(idr_dict_in)
     _exceptions.check_sequence_characters_dict(idr_dict, matrix_name)
     query_idr = idr_dict.pop(query_id)
-    score_df, orthokmer_df, pos_df, rbm_df = run_pairwise_kmer_alignment(
-        query_idr, idr_dict, k, score_matrix_dict=scoremat_dict, rbm=rbm
+    score_df, orthokmer_df, pos_df = run_pairwise_kmer_alignment(
+        query_idr, idr_dict, k, score_matrix_dict=scoremat_dict
     )
     return pairwise_tools.PairkAln(
         orthokmer_df=orthokmer_df,
         pos_df=pos_df,
         score_df=score_df,
-        rbm_df=rbm_df,
     )
 
 
@@ -208,71 +161,61 @@ def pairk_alignment_single_kmer(
         if len(ortholog_idr) < len(kmer):
             best_subseqs[ortholog_id] = "-" * len(kmer)
             continue
-        try:
-            query_k_scores = score_kmer_2_seq_dict_dict(
-                kmer, ortholog_idr, scoremat_dict
-            )
-            best_score, best_subseq, best_pos = best_from_scores(
-                ortholog_idr, query_k_scores, len(kmer)
-            )
-            # check if there are multiple best scores
-        except ValueError as e:
-            best_subseqs[ortholog_id] = "-" * len(kmer)
-            print(e)
-            continue
-        except KeyError as e:
-            best_subseqs[ortholog_id] = "-" * len(kmer)
-            print(e)
-            continue
+        query_k_scores = score_kmer_2_seq_dict_dict(
+            kmer, ortholog_idr, scoremat_dict
+        )
+        best_score, best_subseq, best_pos = best_from_scores(
+            ortholog_idr, query_k_scores, len(kmer)
+        )
         if query_k_scores.count(best_score) > 1:
-            raise ValueError("Multiple best scores found")
+            print("Multiple best scores found")
         best_scores[ortholog_id] = best_score
         best_subseqs[ortholog_id] = best_subseq
         best_positions[ortholog_id] = best_pos
     return best_scores, best_subseqs, best_positions
 
 
-def reciprocal_best_match(query_idr, query_kmer, ortho_kmers, matrix_name):
-    """
-    Calculate the reciprocal best match (RBM) of a query kmer to a set of ortholog kmers.
-    The RBM is calculated by aligning the best scoring ortholog kmer to the query sequence and checking if the best scoring query kmer is the same as the original query kmer.
+# def reciprocal_best_match(query_idr, query_kmer, ortho_kmers, matrix_name):
+#     """
+#     Calculate the reciprocal best match (RBM) of a query kmer to a set of ortholog kmers.
+#     The RBM is calculated by aligning the best scoring ortholog kmer to the query sequence and checking if the best scoring query kmer is the same as the original query kmer.
 
-    Parameters
-    ----------
-    query_idr : str
-        the query sequence
-    query_kmer : str
-        the query kmer
-    ortho_kmers : dict[str, str]
-        a dictionary of ortholog kmers with the key being the ortholog id and the value being the ortholog kmer that originally aligned to the query kmer
-    matrix_name : str
-        the name of the scoring matrix to use in the alignment
+#     Parameters
+#     ----------
+#     query_idr : str
+#         the query sequence
+#     query_kmer : str
+#         the query kmer
+#     ortho_kmers : dict[str, str]
+#         a dictionary of ortholog kmers with the key being the ortholog id and the value being the ortholog kmer that originally aligned to the query kmer
+#     matrix_name : str
+#         the name of the scoring matrix to use in the alignment
 
-    Returns
-    -------
-    dict[str, bool]
-        a dictionary of boolean values indicating whether the query kmer ortholog kmer match is reciprocal
-    """
-    _exceptions.validate_matrix_name(matrix_name)
-    _exceptions.check_sequence_characters_list(
-        [query_idr] + list(ortho_kmers.values()), matrix_name
-    )
-    scoremat_df = matrices.load_matrix_as_df(matrix_name)
-    scoremat_dict = matrices.matrix_df_to_dict(scoremat_df)
-    rbm_dict = {}
-    for ortholog_id, ortholog_kmer in ortho_kmers.items():
-        try:
-            rec_scores = score_kmer_2_seq_dict_dict(
-                ortholog_kmer, query_idr, scoremat_dict
-            )
-            reci_best_score, reci_best_subseq, _ = best_from_scores(
-                query_idr, rec_scores, len(query_kmer)
-            )
-        except ValueError as e:
-            print(e)
-            continue
-        except KeyError as e:
-            print(e)
-            continue
-        rbm_dict[ortholog_id] = reci_best_subseq == query_kmer
-    return rbm_dict
+#     Returns
+#     -------
+#     dict[str, bool]
+#         a dictionary of boolean values indicating whether the query kmer ortholog kmer match is reciprocal
+#     """
+#     _exceptions.validate_matrix_name(matrix_name)
+#     _exceptions.check_sequence_characters_list(
+#         [query_idr] + list(ortho_kmers.values()), matrix_name
+#     )
+#     scoremat_df = matrices.load_matrix_as_df(matrix_name)
+#     scoremat_dict = matrices.matrix_df_to_dict(scoremat_df)
+#     rbm_dict = {}
+#     for ortholog_id, ortholog_kmer in ortho_kmers.items():
+#         try:
+#             rec_scores = score_kmer_2_seq_dict_dict(
+#                 ortholog_kmer, query_idr, scoremat_dict
+#             )
+#             reci_best_score, reci_best_subseq, _ = best_from_scores(
+#                 query_idr, rec_scores, len(query_kmer)
+#             )
+#         except ValueError as e:
+#             print(e)
+#             continue
+#         except KeyError as e:
+#             print(e)
+#             continue
+#         rbm_dict[ortholog_id] = reci_best_subseq == query_kmer
+#     return rbm_dict

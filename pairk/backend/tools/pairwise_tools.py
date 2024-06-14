@@ -27,7 +27,6 @@ def import_pairwise_matrices(filepath, matrix_keys: list[str] | None = None):
         matrix_keys = [
             "score_matrix",
             "orthokmer_matrix",
-            "reciprocal_best_match_matrix",
             "position_matrix",
         ]
     with open(filepath, "r") as json_file:
@@ -60,10 +59,6 @@ class PairkAln:
     score_matrix : pd.DataFrame | None
         the alignment scores for each k-mer in the query sequence against
         the corresponding best matching ortholog k-mer.
-    rbm_matrix : pd.DataFrame | None
-        a boolean dataframe indicating whether the query k-mer is the
-        reciprocal best scoring k-mer to the ortholog k-mer. (This is currently
-        unused in the pairk package)
     query_kmers : list[str]
         the list of query k-mers that were aligned.
     query_sequence : str
@@ -77,17 +72,15 @@ class PairkAln:
         orthokmer_df: pd.DataFrame,
         pos_df: pd.DataFrame,
         score_df: pd.DataFrame | None = None,
-        rbm_df: pd.DataFrame | None = None,
     ):
         self.orthokmer_matrix = orthokmer_df
         self.position_matrix = pos_df
         self.score_matrix = score_df
-        self.rbm_matrix = rbm_df
         # a little trick to get the query sequence from the orthokmer_matrix
         query_kmers = self.orthokmer_matrix["query_kmer"].to_list()
         self.query_kmers = query_kmers
         self.query_sequence = "".join([i[0] for i in query_kmers]) + query_kmers[-1][1:]
-        self.k = len(query_kmers[0][0])
+        self.k = len(query_kmers[0])
 
     @classmethod
     def from_file(cls, filepath: str | Path):
@@ -108,7 +101,6 @@ class PairkAln:
             orthokmer_df=matrices["orthokmer_matrix"],
             pos_df=matrices["position_matrix"],
             score_df=matrices.get("score_matrix"),
-            rbm_df=matrices.get("reciprocal_best_match_matrix"),
         )
 
     def get_pseudo_alignment(self, position: int):
@@ -160,11 +152,6 @@ class PairkAln:
         }
         if self.score_matrix is not None:
             output_dict["score_matrix"] = self.score_matrix.to_dict(orient="split")
-        if self.rbm_matrix is not None:
-            output_dict["reciprocal_best_match_matrix"] = self.rbm_matrix.to_dict(
-                orient="split"
-            )
-
         with open(filepath, "w") as json_file:
             json.dump(
                 output_dict,

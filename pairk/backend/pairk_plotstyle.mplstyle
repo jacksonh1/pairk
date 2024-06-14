@@ -1,0 +1,56 @@
+
+axes.facecolor : w
+axes.edgecolor : k
+axes.linewidth : 1.5
+axes.grid : False
+
+xtick.direction : in
+xtick.color : k
+xtick.major.width : 1.5
+xtick.major.size : 5
+
+ytick.direction : in
+ytick.color : k
+ytick.major.width : 1.5
+ytick.major.size : 5
+
+patch.edgecolor : k
+patch.linewidth : 1
+patch.force_edgecolor : True
+lines.linewidth : 1.5
+
+font.size : 18
+font.family : sans-serif
+font.sans-serif : Arial
+figure.figsize : 6.5, 6.5
+text.color : k
+
+### Legend
+# border is box around legend
+# handle are the symbols representing the data
+legend.fancybox : False  # if True, use a rounded box for the legend, else a rectangle
+legend.markerscale   : 1.0    # the relative size of legend markers vs. original
+legend.labelspacing  : 0.3    # the vertical space between the legend entries in fraction of fontsize
+legend.shadow        : False
+legend.frameon       : True   # whether or not to draw a frame around legend
+legend.framealpha    : None    # opacity of legend frame
+legend.facecolor     : inherit   # legend background color (when 'inherit' uses axes.facecolor)
+legend.edgecolor     : inherit   # legend edge color (when 'inherit' uses axes.edgecolor)
+legend.handleheight : 0.7
+legend.handletextpad : 0.8 # the space between the legend handle and legend text in fraction of fontsize
+legend.borderpad : 0.4 # border whitespace in fontsize units
+
+axes.prop_cycle: cycler('color', ['396ab1', 'da7c30', '3e9651', 'cc2529', '535154', '6b4c9a', '932428', '948b3d'])
+
+axes.labelpad : 10.0
+
+
+
+# #396ab1
+# #da7c30
+# #3e9651
+# #cc2529
+# #535154
+# #6b4c9a
+# #932428
+# #948b3d

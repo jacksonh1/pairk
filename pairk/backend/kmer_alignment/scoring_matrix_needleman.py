@@ -26,13 +26,9 @@ def run_pairwise_kmer_alignment_needleman(
     pos_df = pairwise_tools.make_empty_kmer_ortho_df(
         positions, list(ortholog_idrs.keys())
     )
-    rbm_df = pairwise_tools.make_empty_kmer_ortho_df(
-        positions, list(ortholog_idrs.keys())
-    )
     score_df.loc[positions, "query_kmer"] = kmers
     orthokmer_df.loc[positions, "query_kmer"] = kmers
     pos_df.loc[positions, "query_kmer"] = kmers
-    rbm_df.loc[positions, "query_kmer"] = kmers
     for position, kmer in zip(positions, kmers):
         for ortholog_id, ortholog_idr in ortholog_idrs.items():
             if len(ortholog_idr) < k:
@@ -41,20 +37,6 @@ def run_pairwise_kmer_alignment_needleman(
             best_score, best_subseq, best_pos = (
                 needleman_tools.score_kmer_2_seq_needleman(kmer, ortholog_idr, aligner)
             )
-            # try:
-            #     best_score, best_subseq, best_pos = (
-            #         needleman_tools.score_kmer_2_seq_needleman(
-            #             kmer, ortholog_idr, aligner
-            #         )
-            #     )
-            # except ValueError as e:
-            #     orthokmer_df.loc[position, ortholog_id] = "-" * k
-            #     print(e)
-            #     continue
-            # except KeyError as e:
-            #     orthokmer_df.loc[position, ortholog_id] = "-" * k
-            #     print(e)
-            #     continue
             score_df.loc[position, ortholog_id] = best_score
             orthokmer_df.loc[position, ortholog_id] = best_subseq  # type: ignore
             pos_df.loc[position, ortholog_id] = best_pos
@@ -65,22 +47,7 @@ def run_pairwise_kmer_alignment_needleman(
             ) = needleman_tools.score_kmer_2_seq_needleman(
                 best_subseq, query_idr, aligner  # type: ignore
             )
-            # try:
-            #     (
-            #         reci_best_score,
-            #         reci_best_subseq,
-            #         _,
-            #     ) = needleman_tools.score_kmer_2_seq_needleman(
-            #         best_subseq, query_idr, aligner  # type: ignore
-            #     )
-            # except ValueError as e:
-            #     print(e)
-            #     continue
-            # except KeyError as e:
-            #     print(e)
-            #     continue
-            rbm_df.loc[position, ortholog_id] = reci_best_subseq == kmer
-    return score_df, orthokmer_df, pos_df, rbm_df
+    return score_df, orthokmer_df, pos_df
 
 
 def pairk_alignment_needleman(
@@ -105,14 +72,6 @@ def pairk_alignment_needleman(
         The Biopython pairwise aligner object to use in the pairwise gapless alignments, by default None. If None, then an aligner object will be created using the scoring matrix specified in `matrix_name`. If an aligner object is provided, it will take precedence over the `matrix_name` parameter, i.e. the `matrix_name` parameter will be ignored.
     matrix_name : str, optional
         The name of the scoring matrix to use in the algorithm, by default "EDSSMat50". The available matrices can be viewed with the function `print_available_matrices()` in `pairk.backend.tools.matrices`. If an aligner object is provided, this parameter **will be ignored**.
-    rbm : bool, optional
-        whether to calculate the reciprocal best match (RBM) for each k-mer, by default False.
-        It true, the RBM matrix will be calculated by aligning the best scoring
-        ortholog k-mer to the query sequence and checking if the best
-        scoring query k-mer is the same as the original query k-mer.
-        This is currently unused in the pairk package. The RBM matrix will be
-        included in the output `PairkAln` object, it is a boolean dataframe
-        indicating whether the query k-mer ortholog k-mer match is reciprocal.
 
     Returns
     -------
@@ -125,7 +84,7 @@ def pairk_alignment_needleman(
         _exceptions.validate_matrix_name(matrix_name)
         aligner = needleman_tools.make_aligner(matrix_name)
     query_idr = idr_dict.pop(query_id)
-    score_df, orthokmer_df, pos_df, rbm_df = run_pairwise_kmer_alignment_needleman(
+    score_df, orthokmer_df, pos_df = run_pairwise_kmer_alignment_needleman(
         query_idr,
         idr_dict,
         k,
@@ -135,5 +94,4 @@ def pairk_alignment_needleman(
         orthokmer_df=orthokmer_df,
         pos_df=pos_df,
         score_df=score_df,
-        rbm_df=rbm_df,
     )

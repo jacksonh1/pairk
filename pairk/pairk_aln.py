@@ -1,4 +1,4 @@
-"""primary user-facing functions/objects for the pairk package"""
+"""primary user-facing functions/objects for the alignment step of the pairk package"""
 
 """
 exhaustive_pairk_align:
