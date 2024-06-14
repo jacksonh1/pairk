@@ -7,7 +7,7 @@ from importlib_resources import files
 
 # MATRIX_DIR = Path(str(files('pairk.matrices')))
 # AVAILABLE_MATRIX_FILES = {i.stem: i for i in MATRIX_DIR.glob("*") if not i.name.endswith(".py") and not i.name.startswith("__")}
-AVAILABLE_MATRIX_FILES = {i.stem: i for i in files("pairk.data.matrices").iterdir()}
+AVAILABLE_MATRIX_FILES = {i.stem: i for i in files("pairk.data.matrices").iterdir()}  # type: ignore
 
 BIOPYTHON_MATRICES = Align.substitution_matrices.load()  # type: ignore
 AA_ORDER = [
@@ -61,7 +61,7 @@ def load_matrix_as_df(matrix_name: str) -> pd.DataFrame:
         mat = Align.substitution_matrices.read(AVAILABLE_MATRIX_FILES[matrix_name])  # type: ignore
         return convert_matrix_array_2_df(mat)
     except AssertionError:
-        return pd.read_csv(AVAILABLE_MATRIX_FILES[matrix_name], index_col=0)
+        return pd.read_csv(AVAILABLE_MATRIX_FILES[matrix_name], index_col=0)  # type: ignore
 
 
 def load_matrix_for_aligner(matrix_name: str) -> Align.substitution_matrices.Array:  # type: ignore
@@ -70,10 +70,10 @@ def load_matrix_for_aligner(matrix_name: str) -> Align.substitution_matrices.Arr
         return Align.substitution_matrices.load(matrix_name)  # type: ignore
     try:
         return Align.substitution_matrices.read(AVAILABLE_MATRIX_FILES[matrix_name])  # type: ignore
-    except AssertionError:
+    except AssertionError as e:
         raise ValueError(
             f"matrix {matrix_name}: ({AVAILABLE_MATRIX_FILES[matrix_name]}) is probably not compatible with Bio.Align Aligner"
-        )
+        ) from e
 
 
 def matrix_df_to_dict(matrix_df: pd.DataFrame) -> dict[str, dict[str, float]]:
@@ -91,6 +91,7 @@ def matrix_df_to_dict(matrix_df: pd.DataFrame) -> dict[str, dict[str, float]]:
 
 
 def print_available_matrices():
+    """print available matrices that can be used in the pairk aligner"""
     print("biopython-builtin matrices (aligner compatible):")
     for k in BIOPYTHON_MATRICES:
         print(k)

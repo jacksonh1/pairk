@@ -37,3 +37,4 @@ from pairk.backend.kmer_alignment.scoring_matrix_needleman import (
 )
 from pairk.backend.kmer_alignment.scoring_matrix import pairk_alignment
 from pairk.backend.tools.pairwise_tools import PairkAln
+from pairk.backend.tools.matrices import print_available_matrices

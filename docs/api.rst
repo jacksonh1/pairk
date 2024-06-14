@@ -13,9 +13,9 @@ main pairk functions
    :show-inheritance:
 
 
-.. generating the pairwise k-mer matrices
-.. --------------------------------------
+single k-mer functions
+----------------------
 
-.. .. autofunction:: pairk.kmer_alignment.scoring_matrix.pairk_alignment
-.. .. autofunction:: pairk.kmer_alignment.scoring_matrix_needleman.pairk_alignment_needleman
-
+.. automodule:: pairk.single_kmer
+   :members:
+   :show-inheritance:

@@ -9,7 +9,7 @@ Welcome to pairk's documentation!
 [repository link](https://github.com/jacksonh1/pairk)
 
 
-.. grid:: 1 1 2 2
+.. grid:: 1 1 1 4
 
     .. grid-item-card:: Getting Started
       :margin: 0 3 0 0

@@ -6,16 +6,16 @@ from .pairk_aln import (
     pairk_alignment_needleman,
     make_aligner,
     PairkAln,
+    print_available_matrices,
 )
 from ._version import __version__
-from importlib.resources import files as _files
 from pathlib import Path
-
-example_alignment_file = Path(
-    _files("pairk.data")
-    .joinpath("example_alignment_9606_0_00294e-idraln-555_to_971-idr-440_to_665.fasta")
-    .__fspath__()  # type: ignore
+from pairk.backend.tools.sequence_utils import (
+    FastaImporter,
+    strip_dashes_from_sequences,
 )
+from pairk.examples import example1
+
 
 # Define the __all__ variable
 __all__ = [
@@ -23,5 +23,7 @@ __all__ = [
     "pairk_alignment_needleman",
     "make_aligner",
     "PairkAln",
+    "print_available_matrices",
+    "FastaImporter",
     "__version__",
 ]

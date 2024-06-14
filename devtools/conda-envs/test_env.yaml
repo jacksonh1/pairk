@@ -11,8 +11,14 @@ dependencies:
   - pytest
   - pytest-cov
   - codecov
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - biopython
 
     # Pip-only installs
-  #- pip:
-  #  - codecov
+  - pip:
+   - logomaker
+   - alfpy
 

@@ -8,31 +8,28 @@ import matplotlib.axes
 
 def make_empty_kmer_ortho_df(positions, ortholog_ids: list[str]):
     cols = ["query_kmer"] + ortholog_ids
-    df = pd.DataFrame(
+    return pd.DataFrame(
         index=positions,
         columns=cols,
     )
-    return df
 
 
 def matrix_dict_2_df(matrix_dict, mat_key):
-    df = pd.DataFrame(
+    return pd.DataFrame(
         matrix_dict[mat_key]["data"],
         columns=matrix_dict[mat_key]["columns"],
         index=matrix_dict[mat_key]["index"],
     )
-    return df
 
 
-def import_pairwise_matrices(
-    filepath,
-    matrix_keys: list[str] = [
-        "score_matrix",
-        "orthokmer_matrix",
-        "reciprocal_best_match_matrix",
-        "position_matrix",
-    ],
-):
+def import_pairwise_matrices(filepath, matrix_keys: list[str] | None = None):
+    if matrix_keys is None:
+        matrix_keys = [
+            "score_matrix",
+            "orthokmer_matrix",
+            "reciprocal_best_match_matrix",
+            "position_matrix",
+        ]
     with open(filepath, "r") as json_file:
         data = json.load(json_file)
     matrices = {}
@@ -67,6 +64,12 @@ class PairkAln:
         a boolean dataframe indicating whether the query k-mer is the
         reciprocal best scoring k-mer to the ortholog k-mer. (This is currently
         unused in the pairk package)
+    query_kmers : list[str]
+        the list of query k-mers that were aligned.
+    query_sequence : str
+        the full query sequence that was originally split into k-mers and aligned.
+    k : int
+        the k-mer size used for the alignment.
     """
 
     def __init__(
@@ -80,6 +83,11 @@ class PairkAln:
         self.position_matrix = pos_df
         self.score_matrix = score_df
         self.rbm_matrix = rbm_df
+        # a little trick to get the query sequence from the orthokmer_matrix
+        query_kmers = self.orthokmer_matrix["query_kmer"].to_list()
+        self.query_kmers = query_kmers
+        self.query_sequence = "".join([i[0] for i in query_kmers]) + query_kmers[-1][1:]
+        self.k = len(query_kmers[0][0])
 
     @classmethod
     def from_file(cls, filepath: str | Path):
@@ -118,7 +126,7 @@ class PairkAln:
         """
         return self.orthokmer_matrix.loc[position, :].to_list()  # type: ignore
 
-    def get_query_kmer_positions(self, kmer: str):
+    def find_query_kmer_positions(self, kmer: str):
         """convenience function to search for the positions of a k-mer string.
 
         Parameters
@@ -128,10 +136,10 @@ class PairkAln:
 
         Returns
         -------
-        pd.Index
+        list[int]
             the positions in the query sequence that match the input kmer.
         """
-        return self.position_matrix[self.position_matrix["query_kmer"] == kmer].index
+        return [i for i, x in enumerate(self.query_kmers) if x == kmer]
 
     def write_to_file(self, filepath: str | Path) -> str | Path:
         """save the PairkAln object matrices to a json file.

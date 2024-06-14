@@ -38,37 +38,47 @@ def run_pairwise_kmer_alignment_needleman(
             if len(ortholog_idr) < k:
                 orthokmer_df.loc[position, ortholog_id] = "-" * k
                 continue
-            try:
-                best_score, best_subseq, best_pos = (
-                    needleman_tools.score_kmer_2_seq_needleman(
-                        kmer, ortholog_idr, aligner
-                    )
-                )
-            except ValueError as e:
-                orthokmer_df.loc[position, ortholog_id] = "-" * k
-                print(e)
-                continue
-            except KeyError as e:
-                orthokmer_df.loc[position, ortholog_id] = "-" * k
-                print(e)
-                continue
+            best_score, best_subseq, best_pos = (
+                needleman_tools.score_kmer_2_seq_needleman(kmer, ortholog_idr, aligner)
+            )
+            # try:
+            #     best_score, best_subseq, best_pos = (
+            #         needleman_tools.score_kmer_2_seq_needleman(
+            #             kmer, ortholog_idr, aligner
+            #         )
+            #     )
+            # except ValueError as e:
+            #     orthokmer_df.loc[position, ortholog_id] = "-" * k
+            #     print(e)
+            #     continue
+            # except KeyError as e:
+            #     orthokmer_df.loc[position, ortholog_id] = "-" * k
+            #     print(e)
+            #     continue
             score_df.loc[position, ortholog_id] = best_score
             orthokmer_df.loc[position, ortholog_id] = best_subseq  # type: ignore
             pos_df.loc[position, ortholog_id] = best_pos
-            try:
-                (
-                    reci_best_score,
-                    reci_best_subseq,
-                    _,
-                ) = needleman_tools.score_kmer_2_seq_needleman(
-                    best_subseq, query_idr, aligner  # type: ignore
-                )
-            except ValueError as e:
-                print(e)
-                continue
-            except KeyError as e:
-                print(e)
-                continue
+            (
+                reci_best_score,
+                reci_best_subseq,
+                _,
+            ) = needleman_tools.score_kmer_2_seq_needleman(
+                best_subseq, query_idr, aligner  # type: ignore
+            )
+            # try:
+            #     (
+            #         reci_best_score,
+            #         reci_best_subseq,
+            #         _,
+            #     ) = needleman_tools.score_kmer_2_seq_needleman(
+            #         best_subseq, query_idr, aligner  # type: ignore
+            #     )
+            # except ValueError as e:
+            #     print(e)
+            #     continue
+            # except KeyError as e:
+            #     print(e)
+            #     continue
             rbm_df.loc[position, ortholog_id] = reci_best_subseq == kmer
     return score_df, orthokmer_df, pos_df, rbm_df
 
@@ -110,10 +120,10 @@ def pairk_alignment_needleman(
         an object containing the alignment results. See the `pairk.PairkAln` class for more information.
     """
     _exceptions.check_queryid_in_idr_dict(idr_dict_in, query_id)
+    idr_dict = copy.deepcopy(idr_dict_in)
     if aligner is None:
         _exceptions.validate_matrix_name(matrix_name)
         aligner = needleman_tools.make_aligner(matrix_name)
-    idr_dict = copy.deepcopy(idr_dict_in)
     query_idr = idr_dict.pop(query_id)
     score_df, orthokmer_df, pos_df, rbm_df = run_pairwise_kmer_alignment_needleman(
         query_idr,

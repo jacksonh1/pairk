@@ -272,6 +272,18 @@ class FastaImporter:
         with open(self.fasta_path) as handle:
             return SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
 
+    def import_as_str_dict(self) -> dict[str, SeqRecord]:
+        """return dictionary of strings for each sequence in the fasta file
+
+        Returns
+        -------
+        dict[str, str]
+            dictionary of sequence strings, keys are the sequence ids and values are the sequences as strings
+        """
+        with open(self.fasta_path) as handle:
+            d = SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
+        return {k: str(v.seq) for k, v in d.items()}
+
     def import_as_alignment(self) -> Align.MultipleSeqAlignment:
         """return multiple sequence alignment object
 
