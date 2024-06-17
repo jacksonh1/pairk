@@ -38,7 +38,9 @@ class ExampleAlignment:
         self.idr_start = idr_start
         self.idr_end = idr_end
         self.alignment = self._import_alignment()
-        idr_aln_list = list(self.alignment[:, self.aln_idr_start : self.aln_idr_end])
+        idr_aln_list = list(
+            self.alignment[:, self.aln_idr_start : self.aln_idr_end + 1]
+        )
         self.idr_dict = {
             i.id: str(i.seq) for i in tools.strip_dashes_from_sequences(idr_aln_list)  # type: ignore
         }
@@ -46,6 +48,7 @@ class ExampleAlignment:
             i.id: str(i.seq)
             for i in tools.strip_dashes_from_sequences(list(self.alignment))
         }
+        self.idr_position_map = self._find_unaligned_idr_position_map()
 
     def __str__(self):
         return (
@@ -63,6 +66,15 @@ class ExampleAlignment:
     def _import_alignment(self):
         faimporter = pairk.FastaImporter(self.alignment_file)
         return faimporter.import_as_alignment()
+
+    def _find_unaligned_idr_position_map(self):
+        idr_position_map = {}
+        for seqrecord in list(self.alignment):
+            p = tools.find_alnslice_positions_in_unaln(
+                str(seqrecord.seq), self.aln_idr_start, self.aln_idr_end + 1
+            )
+            idr_position_map[seqrecord.id] = [p[0], p[-1]]
+        return idr_position_map
 
 
 example1_alignment_file = Path(

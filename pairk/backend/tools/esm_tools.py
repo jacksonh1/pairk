@@ -3,7 +3,7 @@ import torch
 
 class ESM_Model:
     """
-    This is taken from the kibby conservation method and trivially modifed: DOI: 10.1093/bib/bbac599.
+    This was adapted from the kibby conservation method: DOI: 10.1093/bib/bbac599.
     see https://github.com/esbgkannan/kibby
 
     Class that loads a specified ESM model. Provides a method for encoding protein sequences.
@@ -21,23 +21,27 @@ class ESM_Model:
     ----------
     model_name : str
         the name of the model that was loaded.
+    threads : int
+        the number of threads for pytorch to use, by default 1.
 
     """
 
-    def __init__(self, model_name: str = "esm2_t33_650M_UR50D"):
+    def __init__(self, model_name: str = "esm2_t33_650M_UR50D", threads: int = 1):
+        torch.set_num_threads(threads)
         self._load(model_name)
 
     def _load(self, model_name):
         import esm
 
         self.model_name = model_name
-        self.model, alphabet = eval(f"esm.pretrained.{self.model_name}()")
+        self.model, alphabet = esm.pretrained.load_model_and_alphabet(model_name)
+        # self.model, alphabet = eval(f"esm.pretrained.{self.model_name}()")
         self.batch_converter = alphabet.get_batch_converter()
         self.model.eval()
         self.embed_dim = self.model._modules["layers"][0].embed_dim
         self.layers = sum(1 for i in self.model._modules["layers"])
 
-    def encode(self, sequence, device="cuda", threads=1):
+    def encode(self, sequence, device="cuda"):
         """encode a protein sequence using the loaded model.
 
         Parameters
@@ -46,8 +50,6 @@ class ESM_Model:
             the amino acid sequence to encode.
         device : str, optional
             whether to use a GPU via "cuda", or "cpu", by default "cuda"
-        threads : int, optional
-            The number of threads to use in pytorch, by default 1
 
         Returns
         -------
@@ -57,7 +59,6 @@ class ESM_Model:
 
         try:
             torch.cuda.empty_cache()
-            torch.set_num_threads(threads)
 
             batch_labels, batch_strs, batch_tokens = self.batch_converter(
                 [["", sequence]]
@@ -73,6 +74,6 @@ class ESM_Model:
         except:
             if device != "cpu":
                 print("failed, trying CPU")
-                return self.encode(sequence, device="cpu", threads=threads)
+                return self.encode(sequence, device="cpu")
             else:
                 return

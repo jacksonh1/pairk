@@ -1,3 +1,7 @@
+"""
+From Capra and Singh 2007, DOI: 10.1093/bioinformatics/btm270
+"""
+
 import math
 import numpy as np
 
@@ -149,52 +153,6 @@ def weighted_gap_penalty(col, seq_weights=None):
     return 1 - (gap_sum / sum(seq_weights))
 
 
-def vn_entropy(col, sim_matrix, gap_penalty=1):
-    """
-    ADD CHECK TO MAKE SURE SIM_MATRIX HAS THE SAME AA ORDERING AS AMINO_ACIDS
-    Calculate the von Neuman Entropy as described in Caffrey et al. 04.
-    This code was adapted from the implementation found in the PFAAT project
-    available on SourceForge. bg_distr is ignored."""
-    aa_counts = [0.0] * 20
-    for aa in col:
-        if aa != "-":
-            aa_counts[AA_TO_INDEX[aa]] += 1
-    dm_size = 0
-    dm_aas = []
-    for i in range(len(aa_counts)):
-        if aa_counts[i] != 0:
-            dm_aas.append(i)
-            dm_size += 1
-    if dm_size == 0:
-        return 0.0
-    row_i = 0
-    col_i = 0
-    dm = np.zeros((dm_size, dm_size), dtype=np.float32)
-    # dm = zeros((dm_size, dm_size), Float32)
-    for i in range(dm_size):
-        row_i = dm_aas[i]
-        for j in range(dm_size):
-            col_i = dm_aas[j]
-            dm[i][j] = aa_counts[row_i] * sim_matrix[row_i][col_i]
-    # ev = la.eigenvalues(dm).real
-    ev = np.linalg.eigvals(dm).real
-    temp = 0.0
-    for e in ev:
-        temp += e
-    if temp != 0:
-        for i in range(len(ev)):
-            ev[i] = ev[i] / temp
-    vne = 0.0
-    for e in ev:
-        if e > (10**-10):
-            vne -= e * math.log(e) / math.log(20)
-    if gap_penalty == 1:
-        # return (1-vne) * weighted_gap_penalty(col, seq_weights)
-        return (1 - vne) * weighted_gap_penalty(col, [1.0] * len(col))
-    else:
-        return 1 - vne
-
-
 def weighted_freq_count_pseudocount(col, seq_weights=None, pc_amount=0.0000001):
     """Return the weighted frequency count for a column--with pseudocount."""
     if seq_weights == None:
@@ -218,8 +176,23 @@ def weighted_freq_count_pseudocount(col, seq_weights=None, pc_amount=0.0000001):
 
 def property_entropy(col, seq_weights=None, gap_penalty=1):
     """Calculate the entropy of a column col relative to a partition of the
-    amino acids. Similar to Mirny '99. sim_matrix and bg_distr are ignored, but
-    could be used to define the sets."""
+    amino acids.
+    ---- New custom docstring ----
+    Williamson '95 partitioning is used. If gap_penalty == 1, then gaps are
+    penalized. The entropy will be between inverted so that it spans 0 to 1,
+    with 1 being the most conserved.
+    partitioning:
+    ["V", "L", "I", "M"],
+    ["F", "W", "Y"],
+    ["S", "T"],
+    ["N", "Q"],
+    ["H", "K", "R"],
+    ["D", "E"],
+    ["A", "G"],
+    ["P"],
+    ["C"],
+    ["-"],
+    """
 
     # Mirny and Shakn. '99
     # property_partition = [['A','V','L','I','M','C'], ['F','W','Y','H'], ['S','T','N','Q'], ['K','R'], ['D', 'E'], ['G', 'P'], ['-']]

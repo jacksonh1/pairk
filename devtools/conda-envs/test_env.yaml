@@ -22,4 +22,8 @@ dependencies:
   - pip:
     - logomaker
     - alfpy
+    - torch
+    - torchvision
+    - fair-esm
+    - transformers
 

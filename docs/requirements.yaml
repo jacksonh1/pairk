@@ -23,6 +23,7 @@ dependencies:
   - biopython
   - importlib-resources
   - seaborn
+  - matplotlib
     # Pip-only installs
   - pip:
     - -e ../

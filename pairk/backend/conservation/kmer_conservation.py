@@ -1,4 +1,6 @@
-import pairk.backend.kmer_matrix_scoring.conservation_tools.capra_singh_2007_scores as cs
+from pairk.backend.conservation.capra_singh_functions.capra_singh_2007_scores import (
+    property_entropy,
+)
 import pandas as pd
 import numpy as np
 from typing import Callable
@@ -23,14 +25,14 @@ def kmerlist_to_columns(seqlist: np.ndarray):
 
 def score_pseudo_aln(
     seqlist: np.ndarray,
-    score_func: Callable = cs.property_entropy,
+    score_func: Callable = property_entropy,
 ):
     col_strings = kmerlist_to_columns(seqlist)
     return [score_func(c) for c in col_strings]
 
 
 def orthokmer_arr_to_score_arr(
-    orthokmer_arr: np.ndarray, score_func: Callable = cs.property_entropy
+    orthokmer_arr: np.ndarray, score_func: Callable = property_entropy
 ) -> np.ndarray:
     k = len(orthokmer_arr[0, 0])
     score_arr = np.zeros((orthokmer_arr.shape[0], k))
@@ -47,9 +49,9 @@ def calculate_z_scores(score_arr: np.ndarray):
     return z_score_arr
 
 
-def calculate_conservation(
+def calculate_conservation_arrays(
     orthokmer_df: pd.DataFrame,
-    score_func: Callable = cs.property_entropy,
+    score_func: Callable = property_entropy,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     if not all([type(i) == str for i in orthokmer_df.values.flatten()]):
         raise ValueError("Orthokmer matrix contains non-string elements")
@@ -200,11 +202,28 @@ class PairkConservation:
 
 
 # write a function that does the same thing as the above code
-def calculate_pairk_conservation(
+def calculate_conservation(
     pairk_aln_results: PairkAln,
-    score_func: Callable = cs.property_entropy,
+    score_func: Callable = property_entropy,
 ) -> PairkConservation:
-    ok_arr, score_arr, z_score_arr = calculate_conservation(
+    """calculate the conservation scores for the k-mers in the PairkAln object. calculates the conservation scores and z-scores for each k-mer position.
+
+    Parameters
+    ----------
+    pairk_aln_results : PairkAln
+        the results of the pairk alignment step as a pairk.PairkAln object.
+    score_func : Callable, optional
+        A function to calculate conservation scores in a columnwise manner, by
+        default it is the property_entropy function from Capra and Singh 2007,
+        DOI: 10.1093/bioinformatics/btm270 located in the
+        `pairk.pairk_conservation.capra_singh_functions` module.
+
+    Returns
+    -------
+    PairkConservation
+        PairkConservation object containing the conservation scores and z-scores for each k-mer position.
+    """
+    ok_arr, score_arr, z_score_arr = calculate_conservation_arrays(
         pairk_aln_results.orthokmer_matrix, score_func
     )
     return PairkConservation(ok_arr, score_arr, z_score_arr)

@@ -28,7 +28,7 @@ def run_pairwise_kmer_emb_aln(
     embedding_dict: dict,
     k: int,
 ):
-    # get the reference sequence and remove it from the embedding_dict
+    # get the query sequence and remove it from the embedding_dict
     ref_seq_str, ref_seq_embedding = embedding_dict.pop(query_id)
     kmers = tools.gen_kmers(ref_seq_str, k)
     positions = list(range(len(ref_seq_str) - (k - 1)))
@@ -41,9 +41,9 @@ def run_pairwise_kmer_emb_aln(
     pos_df = pairwise_tools.make_empty_kmer_ortho_df(
         positions, list(embedding_dict.keys())
     )
-    score_df.loc[positions, "reference_kmer"] = kmers
-    orthokmer_df.loc[positions, "reference_kmer"] = kmers
-    pos_df.loc[positions, "reference_kmer"] = kmers
+    score_df.loc[positions, "query_kmer"] = kmers
+    orthokmer_df.loc[positions, "query_kmer"] = kmers
+    pos_df.loc[positions, "query_kmer"] = kmers
 
     # Make expanded ref tensor
     expand_inds_ref = torch.arange(k).view(1, -1) + torch.arange(
@@ -107,13 +107,12 @@ def get_idr_embeddings(
     idr_end: int,
     mod: esm_tools.ESM_Model,
     device="cuda",
-    threads=1,
 ):
     idr_str = seq_str[idr_start : idr_end + 1]
     if len(idr_str) == 0:
         print("no idr")
         return None, None
-    orth_tensor = mod.encode(seq_str, device=device, threads=threads)
+    orth_tensor = mod.encode(seq_str, device=device)
     idr_ortho_tensor = orth_tensor[idr_start + 1 : idr_end + 2, :]  # type: ignore # +1 to account for the start token
     return idr_str, idr_ortho_tensor
 
@@ -122,15 +121,19 @@ def get_idr_embedding_dict(
     full_length_sequence_dict: dict[str, str],
     idr_position_map: dict[str, list[int]],
     mod: esm_tools.ESM_Model,
-    **kwargs,
+    device="cuda",
 ):
     embedding_dict = defaultdict(list)
-    for id, seq in full_length_sequence_dict.items():
+    for i, seq in full_length_sequence_dict.items():
         idr_str, idr_tensor = get_idr_embeddings(
-            seq, idr_position_map[id][0], idr_position_map[id][1], mod, **kwargs
+            seq,
+            idr_position_map[i][0],
+            idr_position_map[i][1],
+            mod,
+            device,
         )
-        embedding_dict[id].append(idr_str)
-        embedding_dict[id].append(idr_tensor)
+        embedding_dict[i].append(idr_str)
+        embedding_dict[i].append(idr_tensor)
     return embedding_dict
 
 
@@ -140,12 +143,16 @@ def pairk_alignment_embedding_distance(
     query_id: str,
     k: int,
     mod: esm_tools.ESM_Model,
-    **kwargs,
+    device: str = "cuda",
 ):
-    _exceptions.check_queryid_in_idr_dict(query_id, full_length_dict_in)
+    _exceptions.check_queryid_in_idr_dict(full_length_dict_in, query_id)
+    _exceptions.check_queryid_in_idr_dict(idr_position_map, query_id)
+    assert set(full_length_dict_in.keys()) == set(
+        idr_position_map.keys()
+    ), "Keys in full_length_dict and idr_position_map must be the same"
     full_length_dict = copy.deepcopy(full_length_dict_in)
     embedding_dict = get_idr_embedding_dict(
-        full_length_dict, idr_position_map, mod, **kwargs
+        full_length_dict, idr_position_map, mod, device
     )
     score_df, orthokmer_df, pos_df = run_pairwise_kmer_emb_aln(
         query_id,

@@ -17,7 +17,7 @@ def validate_matrix_name(matrix_name):
             )
 
 
-def check_queryid_in_idr_dict(idr_dict_in, query_id):
+def check_queryid_in_idr_dict(idr_dict_in: dict, query_id: str):
     if query_id not in idr_dict_in:
         raise ValueError(
             f"query_id '{query_id}' not found in the input sequence dictionary"

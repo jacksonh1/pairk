@@ -12,8 +12,9 @@ from pairk.pairk_aln import (
 )
 from pairk.pairk_conservation import (
     PairkConservation,
-    calculate_pairk_conservation,
     calculate_conservation,
+    calculate_conservation_arrays,
+    capra_singh_functions,
 )
 from ._version import __version__
 from pathlib import Path
@@ -34,8 +35,9 @@ __all__ = [
     "make_aligner",
     "PairkAln",
     "PairkConservation",
-    "calculate_pairk_conservation",
     "calculate_conservation",
+    "calculate_conservation_arrays",
+    "capra_singh_functions",
     "ESM_Model",
     "__version__",
 ]
