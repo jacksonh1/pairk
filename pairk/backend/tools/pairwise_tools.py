@@ -159,6 +159,13 @@ class PairkAln:
             )
         return filepath
 
+    def _create_axes_if_none(
+        self, ax: matplotlib.axes.Axes | None = None
+    ) -> matplotlib.axes.Axes:
+        if ax is None:
+            fig, ax = plt.subplots()
+        return ax  # type: ignore
+
     def plot_score_heatmap(
         self, ax: matplotlib.axes.Axes | None = None, **kwargs
     ) -> matplotlib.axes.Axes:
@@ -181,8 +188,7 @@ class PairkAln:
         ValueError
             raised if no score matrix is found.
         """
-        if ax is None:
-            fig, ax = plt.subplots()
+        ax = self._create_axes_if_none(ax)
         if self.score_matrix is None:
             raise ValueError("No score matrix found.")
         df = self.score_matrix.copy()
@@ -210,8 +216,7 @@ class PairkAln:
         matplotlib.axes.Axes
             The axis on which the heatmap was plotted.
         """
-        if ax is None:
-            fig, ax = plt.subplots()
+        ax = self._create_axes_if_none(ax)
         df = self.position_matrix.copy()
         df = df.drop(columns="query_kmer")
         df = df.astype(float)

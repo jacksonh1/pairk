@@ -97,4 +97,5 @@ def print_available_matrices():
         print(k)
     print("\nother matrices:")
     for k, v in AVAILABLE_MATRIX_FILES.items():
-        print(f"{k}\n - {v}")
+        # print(f"{k}\n - {v}")
+        print(f"{k}")

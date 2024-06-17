@@ -8,30 +8,53 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.16.2
 #   kernelspec:
-#     display_name: pairk
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
 
 # %% [markdown]
-# Pairk - Pairwise k-mer alignment 
+# # Pairk - tutorial notebook
+
+# %% [markdown]
+# Pairk - quantifying the conservation of motifs within intrinsically disordered regions.
+#
+# This notebook will go over the basics of how to use the pairk library using an example set of sequences (comes pre-installed with pairk).
+
+# %% [markdown]
+# ## brief overview of pairk
+#
+# Pairk can be divided into 2 parts:
+# 1. `pairk_aln` - pairwise kmer alignment. Aligns each k-mer in a query sequence with each sequence in a set of homologs. The alignment is gapless and performed pairwise. For each k-mer in the query sequence, the result is a set of the best matching k-mers from each homolog. We call this set of k-mers a "pseudo-MSA". The k-mer alignment step can be performed via a scoring matrix (similar to a traditional alignment), or via ESM2 embeddings. These are explained in more detail below.
+# 2. `pairk_conservation` - scores the conservation of the pseudo-MSAs via columnwise conservation scores.
+
+# %% [markdown]
+# # Step 1. pairk_aln
+
+# %% [markdown]
+# ## import pairk
 
 # %%
-import pairk
 # %load_ext autoreload
 # %autoreload 2
 
-# %% [markdown]
-# # load an example dataset
+# %%
+import pairk
 
 # %% [markdown]
-# load an example alignment
+# ## load an example dataset
 
 # %%
 ex1 = pairk.example1
 
 # %% [markdown]
-# This example is imported as an object but just contains: an MSA, the query id, positions of query idrs, and the IDR sequences from the MSA themselves.
+# This example is imported as an object but it just contains:<br> 
+# - an MSA
+# - the query id
+# - positions of query idr in the MSA
+# - the IDR sequences from the MSA themselves.
+#
+# These could be 
 
 # %%
 print(ex1)

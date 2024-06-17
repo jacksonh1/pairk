@@ -35,6 +35,10 @@ from pairk.backend.kmer_alignment.needleman_tools import make_aligner
 from pairk.backend.kmer_alignment.scoring_matrix_needleman import (
     pairk_alignment_needleman,
 )
+from pairk.backend.kmer_alignment.esm_embedding_distance import (
+    pairk_alignment_embedding_distance,
+)
 from pairk.backend.kmer_alignment.scoring_matrix import pairk_alignment
 from pairk.backend.tools.pairwise_tools import PairkAln
 from pairk.backend.tools.matrices import print_available_matrices
+from pairk.backend.tools.esm_tools import ESM_Model

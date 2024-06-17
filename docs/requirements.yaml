@@ -28,4 +28,8 @@ dependencies:
     - -e ../
     - alfpy
     - logomaker
+    - torch
+    - torchvision
+    - fair-esm
+    - transformers
     # - sphinxcontrib-pseudocode

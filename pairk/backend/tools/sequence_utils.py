@@ -215,7 +215,7 @@ def pad_with_aas_or_gaps(seq: str, st: int, end: int, flank: int = 0) -> str:
     return left + right
 
 
-def gen_kmers(seq, k):
+def gen_kmers(seq: str, k: int) -> list[str]:
     """
     generates list of length k "kmers" comprising `seq`
 
@@ -408,6 +408,17 @@ def reindex_alignment_str(seq_str):
     list
         list of indexes of nongap characters in the gapped sequence. index the return list with
         non-gap indexes to get the index of the gapped sequence. If the gapped sequence is `A--A--A`, the return list will be `[0, 3, 6]`
+
+    Examples
+    --------
+    >>> aligned = 'A--A--A'
+    >>> unaligned, ind = reindex_alignment_str(aligned)
+    >>> print(unaligned)
+    'AAA'
+    >>> print(ind)
+    [0, 3, 6]
+    >>> print(aligned[ind[0]:ind[-1]+1])
+    'A--A--A'
     """
     unal_seq = ""
     index_map = []
@@ -417,6 +428,48 @@ def reindex_alignment_str(seq_str):
             unal_seq = unal_seq + i
             index_map.append(al_pos)
     return unal_seq, index_map
+
+
+def find_alnslice_positions_in_unaln(aln: str, aln_start: int, aln_end: int):
+    """find the non-gap positions of a slice of an aligned sequence in the unaligned sequence
+
+    Parameters
+    ----------
+    aln : str
+        aligned sequence with gaps
+    aln_start : int
+        start position of the slice of the aligned sequence
+    aln_end : int
+        end position of the slice of the aligned sequence
+
+    Returns
+    -------
+    list
+        list of positions of the slice in the unaligned sequence
+    """
+    positions = []
+    unaln_index = 0
+    for i in range(len(aln)):
+        if aln[i] != "-":
+            if aln_start <= i < aln_end:
+                positions.append(unaln_index)
+            unaln_index += 1
+    return positions
+
+
+# t = '--LPPPP---PP------TEST--'
+# tun = tools.strip_dashes_from_str(t)
+# start = 6
+# end = 13
+# print(t[start:end])
+# unal_pos =find_alnslice_positions_in_unaln(t, start, end)
+# print(unal_pos)
+# if len(unal_pos) == 0:
+#     print('No positions')
+# else:
+#     print(tun[unal_pos[0]:unal_pos[-1]+1])
+# for i in unal_pos:
+#     print(i, tun[i])
 
 
 def find_subseq_in_aligned_seq_str(unaligned_subseq_str, aligned_seq_str):

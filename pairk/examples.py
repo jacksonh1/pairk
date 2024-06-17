@@ -42,13 +42,17 @@ class ExampleAlignment:
         self.idr_dict = {
             i.id: str(i.seq) for i in tools.strip_dashes_from_sequences(idr_aln_list)  # type: ignore
         }
+        self.full_length_dict = {
+            i.id: str(i.seq)
+            for i in tools.strip_dashes_from_sequences(list(self.alignment))
+        }
 
     def __str__(self):
         return (
             f"Alignment file: {self.alignment_file}\n"
             f"Query ID: {self.query_id}\n"
             f"IDR start in MSA: {self.aln_idr_start}\n"
-            f"IDR end in MSA: {self.aln_idr_end}"
+            f"IDR end in MSA: {self.aln_idr_end}\n"
             f"IDR start: {self.idr_start}\n"
             f"IDR end: {self.idr_end}\n"
         )

@@ -4,9 +4,11 @@
 from pairk.pairk_aln import (
     pairk_alignment,
     pairk_alignment_needleman,
+    pairk_alignment_embedding_distance,
     make_aligner,
     PairkAln,
     print_available_matrices,
+    ESM_Model,
 )
 from pairk.pairk_conservation import (
     PairkConservation,
@@ -28,10 +30,12 @@ __all__ = [
     "print_available_matrices",
     "pairk_alignment",
     "pairk_alignment_needleman",
+    "pairk_alignment_embedding_distance",
     "make_aligner",
     "PairkAln",
     "PairkConservation",
     "calculate_pairk_conservation",
     "calculate_conservation",
+    "ESM_Model",
     "__version__",
 ]

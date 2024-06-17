@@ -25,8 +25,8 @@ def make_aligner(
     _exceptions.validate_matrix_name(matrix_name)
     matrix = matrices.load_matrix_for_aligner(matrix_name)
     aligner = Align.PairwiseAligner()
-    aligner.open_gap_score = -100000
-    aligner.extend_gap_score = -100000
+    aligner.open_gap_score = -1000000
+    aligner.extend_gap_score = -1000000
     aligner.query_end_gap_score = 0.0
     aligner.mode = "global"
     aligner.substitution_matrix = matrix
