@@ -6,10 +6,10 @@
 Welcome to pairk's documentation!
 =========================================================
 
-[repository link](https://github.com/jacksonh1/pairk)
+repository link - https://github.com/jacksonh1/pairk
 
 
-.. grid:: 1 1 1 4
+.. grid:: 1 1 4 1
 
     .. grid-item-card:: Getting Started
       :margin: 0 3 0 0
@@ -53,18 +53,6 @@ Welcome to pairk's documentation!
 
       
 
-    .. grid-item-card::  Developer Guide
-      :margin: 0 3 0 0
-      
-      How to contribute to pairk.
-
-      .. button-link:: ./developer_guide.html
-         :color: primary
-         :outline:
-         :expand:
-
-         To the Developer Guide
-
 
 .. toctree::
    :maxdepth: 2
@@ -74,5 +62,4 @@ Welcome to pairk's documentation!
    getting_started
    user_guide
    api
-   developer_guide
 

@@ -10,7 +10,36 @@ import numpy as np
 import pandas as pd
 from Bio import Align, AlignIO, Seq, SeqIO
 from Bio.SeqRecord import SeqRecord
-from pairk.backend.tools import alignment_tools as aln_tools
+
+
+def percent_identity(seq1: SeqRecord, seq2: SeqRecord) -> float:
+    """
+    Returns a percent identity between 0 (no identical residues) and 1 (all residues are identical)
+    - The sequences must be pre-aligned (i.e. they have the same length)
+    - The returned percent identity is computed as the number of identical residues divided by the
+    length of compared alignment sites. Alignment sites where both sequences are gaps ('-' characters)
+    are not compared.
+
+    Parameters
+    ----------
+    seq1 : str or seqrecord
+        first sequence
+    seq2 : str or seqrecord
+        second sequence
+    """
+    assert len(seq1) == len(
+        seq2
+    ), "sequences are not the same length. Are they aligned?"
+    num_same = 0
+    length = len(seq1)
+    for i in range(len(seq1)):
+        if seq1[i] == "-" and seq2[i] == "-":
+            length -= 1
+            continue
+        if seq1[i] == seq2[i]:
+            num_same += 1
+    pid = num_same / length
+    return pid
 
 
 def get_first_non_gap_index(s: str) -> int:
@@ -33,9 +62,9 @@ def get_first_non_gap_index(s: str) -> int:
     return index
 
 
-def sort_aln_by_pid2ref(aln: Align.MultipleSeqAlignment, refseq: str | SeqRecord):
+def sort_aln_by_pid2ref(aln: Align.MultipleSeqAlignment, refseq: SeqRecord):
     aln.sort(
-        key=lambda record: aln_tools.percent_identity(record, refseq),
+        key=lambda record: percent_identity(record, refseq),
         reverse=True,
     )
     return aln
@@ -272,7 +301,7 @@ class FastaImporter:
         with open(self.fasta_path) as handle:
             return SeqIO.to_dict(SeqIO.parse(handle, "fasta"))
 
-    def import_as_str_dict(self) -> dict[str, SeqRecord]:
+    def import_as_str_dict(self) -> dict[str, str]:
         """return dictionary of strings for each sequence in the fasta file
 
         Returns

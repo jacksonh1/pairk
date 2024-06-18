@@ -16,6 +16,13 @@ This work was supported by the National Institutes of Health under Award Number 
 ```bash
 pip install pairk
 ```
+or for an editable install that you can modify:
+```bash
+git clone https://github.com/jacksonh1/pairk.git
+cd pairk
+pip install -e .
+```
+
 
 ### Documentation
 see the [pairk documentation](https://pairk.readthedocs.io/en/latest/).

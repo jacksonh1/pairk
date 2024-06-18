@@ -9,12 +9,12 @@ class ESM_Model:
     Class that loads a specified ESM model. Provides a method for encoding protein sequences.
 
     available models:
-    - esm1b_t33_650M_UR50S
-    - esm2_t6_8M_UR50D
-    - esm2_t12_35M_UR50D
-    - esm2_t30_150M_UR50D
-    - esm2_t33_650M_UR50D (default)
-    - esm2_t36_3B_UR50D
+    - esm1b_t33_650M_UR50S\n
+    - esm2_t6_8M_UR50D\n
+    - esm2_t12_35M_UR50D\n
+    - esm2_t30_150M_UR50D\n
+    - esm2_t33_650M_UR50D (default)\n
+    - esm2_t36_3B_UR50D\n
 
 
     Attributes

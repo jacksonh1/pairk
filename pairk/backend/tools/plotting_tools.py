@@ -38,7 +38,7 @@ def _format_bar_plot(ax, xlabel_sequence: str, labelsize=16):
 
 
 def plot_logo(ax, str_list, tick_label_str, labelsize=16):
-    counts = pssms.alignment_2_counts(str_list, show_plot=False, heatmap=False)
+    counts = pssms.alignment_2_counts(str_list)
     lm.Logo(counts, color_scheme="chemistry", ax=ax)
     ax.set_ylim(0, len(str_list))
     _ = ax.set_xticks(

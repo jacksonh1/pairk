@@ -58,20 +58,34 @@ def pairk_alignment_needleman(
     matrix_name: str = "EDSSMat50",
 ) -> pairwise_tools.PairkAln:
     """
-    run pairwise k-mer alignment method using the needleman-wunsch algorithm as implemented in Biopython.
+    run pairwise k-mer alignment method using the needleman-wunsch algorithm as 
+    implemented in Biopython. Each query k-mer is scored against each ortholog 
+    k-mer to find the best matching ortholog k-mer in each ortholog. If a ortholog 
+    IDR is shorter than the k-mer, a string of "-" characters assigned as the 
+    best matching ortholog k-mer for that ortholog
+
+    **Note**: if there are multiple top-scoring matches, only one is returned.
 
     Parameters
     ----------
     idr_dict_in : dict[str, str]
-        input sequences in dictionary format with the key being the sequence id and the value being the sequence as a string
+        input sequences in dictionary format with the key being the sequence id and 
+        the value being the sequence as a string
     query_id : str
         the id of the query sequence within the `idr_dict_in` dictionary
     k : int
         the length of the k-mers to use for the alignment
     aligner : Align.PairwiseAligner | None, optional
-        The Biopython pairwise aligner object to use in the pairwise gapless alignments, by default None. If None, then an aligner object will be created using the scoring matrix specified in `matrix_name`. If an aligner object is provided, it will take precedence over the `matrix_name` parameter, i.e. the `matrix_name` parameter will be ignored.
+        The Biopython pairwise aligner object to use in the pairwise gapless alignments, 
+        by default None. If None, then an aligner object will be created using the scoring
+        matrix specified in `matrix_name`. If an aligner object is provided, it will 
+        take precedence over the `matrix_name` parameter, i.e. the `matrix_name` parameter 
+        will be ignored.
     matrix_name : str, optional
-        The name of the scoring matrix to use in the algorithm, by default "EDSSMat50". The available matrices can be viewed with the function `print_available_matrices()` in `pairk.backend.tools.matrices`. If an aligner object is provided, this parameter **will be ignored**.
+        The name of the scoring matrix to use in the algorithm, by default "EDSSMat50". 
+        The available matrices can be viewed with the function `print_available_matrices()` 
+        in `pairk.backend.tools.matrices`. If an aligner object is provided, 
+        this parameter **will be ignored**.
 
     Returns
     -------
