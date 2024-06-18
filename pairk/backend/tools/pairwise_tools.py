@@ -82,6 +82,13 @@ class PairkAln:
         self.query_sequence = "".join([i[0] for i in query_kmers]) + query_kmers[-1][1:]
         self.k = len(query_kmers[0])
 
+    def __str__(self):
+        return (
+            f"PairkAln object for {len(self.query_kmers)} query k-mers\n"
+            f"query sequence: {self.query_sequence}\n"
+            f"k-mer length: {self.k}\n"
+        )
+
     @classmethod
     def from_file(cls, filepath: str | Path):
         """import the pairwise alignment matrices from a json file.
