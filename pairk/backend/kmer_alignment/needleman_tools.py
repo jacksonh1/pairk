@@ -1,4 +1,5 @@
 from Bio import Align, Seq
+from Bio.Align import Alignment
 import pairk.backend.tools.sequence_utils as tools
 import pairk.backend.tools.matrices as matrices
 import pairk.backend.exceptions as _exceptions
@@ -37,7 +38,7 @@ def kmer_align_aligner(
     kmer: str,
     sequence: str,
     aligner: Align.PairwiseAligner,
-) -> Align.Alignment:
+) -> Alignment:
     alignment = aligner.align(Seq.Seq(sequence), Seq.Seq(kmer))[0]
     return alignment
 
