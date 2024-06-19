@@ -15,7 +15,7 @@ dependencies:
   - pandas
   - matplotlib
   - seaborn
-  - biopython
+  - biopython >= 1.8
   - importlib-resources
 
     # Pip-only installs
