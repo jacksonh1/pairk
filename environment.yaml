@@ -1,0 +1,22 @@
+name: pairk
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+    # Base depends
+  - python
+  - pip
+  - numpy
+  - pandas
+  - biopython
+  - seaborn
+  - matplotlib
+  - pip:
+    - -e ../
+    - alfpy
+    - logomaker
+    - torch
+    - torchvision
+    - fair-esm
+    - transformers
