@@ -23,8 +23,8 @@ python:
 #     - requirements: docs/requirements.txt
 #     - method: pip
 #       path: .
-# conda:
-#   environment: docs/requirements.yaml
+conda:
+  environment: docs/requirements.yaml
 
 sphinx:
   configuration: docs/conf.py
