@@ -84,7 +84,7 @@ Here's a quick example to get you started:
     conservation_results.plot_conservation_mosaic(position=0)
 
 
-see the `usage <https://pairk.readthedocs.io/en/latest/usage.html>`_ page for more details on how to use pairk.
+see the `User Guide <https://pairk.readthedocs.io/en/latest/user_guide.html>`_ page for more details on how to use pairk.
 
 See our `tutorial notebook <https://github.com/jacksonh1/pairk/blob/main/demo/demo.ipynb>`_ for a notebook-based tutorial on how to use pairk.
 

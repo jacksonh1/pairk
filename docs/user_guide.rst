@@ -1,5 +1,5 @@
 ========================
-pairk Usage Guide
+User Guide
 ========================
 
 .. generate a table of contents for this document
@@ -143,6 +143,11 @@ k-mer alignment results
 
 The results are returned as a ``PairkAln`` object.
 
+.. autoclass:: pairk.PairkAln
+   :members:
+   :undoc-members:
+   :no-index:
+
 The actual "alignments" are stored as matrices in the ``PairkAln`` object. The main matrices are:
 
 * orthokmer_matrix - the best matching k-mers from each homolog for each query k-mer
@@ -153,10 +158,6 @@ Each matrix is a pandas DataFrame where the index is the start position of the k
 
 The ``PairkAln`` object has some useful methods for accessing the data. For example, you can get the best matching k-mers for a query k-mer by its position in the query sequence using the ``.get_pseudo_alignment`` method (or by directly accessing the dataframes). You can also plot the matrices as heatmaps, save the results to a json file, and load the results from that file. examples are shown below
 
-.. autoclass:: pairk.PairkAln
-   :members:
-   :undoc-members:
-   :no-index:
 
 example: accessing the DataFrames from the ``PairkAln`` object directly
 
@@ -198,6 +199,9 @@ example: save the results to a file using ``write_to_file`` and load them back i
 pairk.pairk_alignment_needleman - faster
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. autofunction:: pairk.pairk_alignment_needleman
+    :no-index: 
+
 This method returns the same results as ``pairk.pairk_alignment``, but it is faster.
 
 The difference is that the ``pairk.pairk_alignment_needleman`` method uses the Needleman-Wunsch algorithm to align the k-mers, while the ``pairk.pairk_alignment`` method uses a scoring matrix to exhaustively score the k-mer matches. ``pairk.pairk_alignment_needleman`` ensures that the alignment is gapless by using an extremely high gap opening and extension penalty (-1000000). This will ensure that the alignment is gapless, unless you use a really unusual scoring matrix with very high scores.
@@ -206,8 +210,6 @@ This method takes similar arguments as ``pairk.pairk_alignment``, accept that th
 
 The ``aligner`` object can be created via the ``pairk.create_aligner`` function. This function takes the name of the scoring matrix as an argument and returns the aligner object. If you don't pass the ``aligner`` argument to the ``pairk.pairk_alignment_needleman`` method, it will create a new aligner using the ``matrix_name`` argument. This is fine if you're not doing multiprocessing. If you are doing multiprocessing, I would suggest creating the aligner before calling the method. If the ``aligner`` argument is passed, the ``matrix_name`` argument is ignored.
 
-.. autofunction:: pairk.pairk_alignment_needleman
-    :no-index: 
 
 .. code-block:: python
 
@@ -239,6 +241,10 @@ This method uses the Euclidean distance between the query k-mer residue embeddin
 pairk.pairk_alignment_embedding_distance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. autofunction:: pairk.pairk_alignment_embedding_distance
+    :no-index: 
+
+
 This method generates residue embeddings using the ESM2 protein large language model. 
 
 Because residue embeddings are used, the inputs are slightly different than the previous methods. 
@@ -252,7 +258,12 @@ The inputs are:
 * ``mod`` - a ``pairk.ESM_Model`` object. This is the ESM2 model used to generate the embeddings. The code for the ESM2 embeddings is adapted from the kibby conservation tool [link](https://github.com/esbgkannan/kibby) DOI: 10.1093/bib/bbac599
 * ``device`` - whether to use cuda or your cpu for pytorch, should be either "cpu" or "cuda". (default is "cuda"). If "cuda" fails, it will default to "cpu". This argument is passed to the ``pairk.ESM_Model.encode`` method
 
-The ``mod`` input is required so that you can preload the ESM model before running the method. <br><br>
+.. autoclass:: pairk.ESM_Model
+   :members:
+   :undoc-members:
+   :no-index: 
+
+The ``mod`` input is required so that you can preload the ESM model before running the method.
 
 Full length sequences (``full_length_dict_in``) are required to generate the embeddings because each embedding is dependent upon the neighboring residues. The embeddings for just an IDR are different than the embeddings for a full length sequences. Thus, the full length embeddings are gathered first, and then the IDR embeddings are sliced out for the k-mer alignment. 
 
@@ -260,16 +271,7 @@ The ``idr_position_map`` is used to slice out the IDR embeddings, and there must
 
 There is currently no way to use pre-generated embeddings for this method, but this functionality would be very easy to add.
 
-.. autofunction:: pairk.pairk_alignment_embedding_distance
-    :no-index: 
-
 The ``pairk.pairk_alignment_embedding_distance`` method returns a ``PairkAln`` object, just like the previous methods
-
-.. autoclass:: pairk.ESM_Model
-   :members:
-   :undoc-members:
-   :no-index: 
-
 
 example usage: loading the ESM2 model and running the method
 
@@ -295,14 +297,14 @@ In this step, the query k-mer and the best matching homolog k-mers are treated a
 pairk.calculate_conservation
 ------------------------------
 
-the main method for Step 2 is the ``pairk.calculate_conservation`` method. It simply takes the ``PairkAln`` object as input, along with a columnwise conservation scoring function and returns a ``PairkConservation`` object.
-
 .. autofunction:: pairk.calculate_conservation
    :no-index: 
- 
+
+the main method for Step 2 is the ``pairk.calculate_conservation`` method. It simply takes the ``PairkAln`` object as input, along with a columnwise conservation scoring function and returns a ``PairkConservation`` object.
+
 The columnwise conservation scoring function can be any function that takes a string of residues (a column of an alignment) as an input and returns a float (conservation score). You can use custom functions here, but pairk comes with a few built-in functions from Capra and Singh 2007 (DOI: 10.1093/bioinformatics/btm270) available in the ``pairk.pairk_conservation.capra_singh_functions`` module. The ``pairk.pairk_conservation.capra_singh_functions.property_entropy`` is the default function used by ``pairk.calculate_conservation``.
 
-.. autoclass:: pairk.pairk_conservation.capra_singh_functions
+.. automodule:: pairk.pairk_conservation.capra_singh_functions
    :members:
    :undoc-members:
    :no-index: 
@@ -349,22 +351,22 @@ k-mer conservation results
 The ``pairk.calculate_conservation`` method returns a ``PairkConservation`` object.
 The returned ``PairkConservation`` object has matrices with similar structure as ``PairkAln`` object matrices, except that they are numpy arrays instead of pandas dataframes.
 
+.. autoclass:: pairk.PairkConservation
+   :members:
+   :undoc-members:
+   :no-index: 
+
 * orthokmer_arr - the best matching k-mers from each homolog for each query k-mer - analogous to the orthokmer_matrix in the ``PairkAln`` object
 * score_arr - the conservation scores for each position in the pseudo-MSA of each query k-mer
 * z_score_arr - the conservation score z-scores for each position in the pseudo-MSA of each query k-mer
 
-If ``n`` is the number of k-mers in the query sequence and ``m`` is the number of homologs, the matrices will have the dimensions:
+If ``n`` is the number of k-mers in the query sequence and ``m`` is the number of homologs (including the query sequence), the matrices will have the dimensions:
 
 * orthokmer_arr: (n, m)
 * score_arr: (n, k)
 * z_score_arr: (n, k)
 
 The row index of the arrays correspond to the starting position of the query k-mer in the query IDR. For example, to access the conservation scores for the k-mer at position 4 in the query IDR, you would access the 4th row of the arrays: ``.score_arr[4, :]``.
-
-.. autoclass:: pairk.PairkConservation
-   :members:
-   :undoc-members:
-   :no-index: 
 
 
 accessing the results
