@@ -53,5 +53,26 @@ For each k-mer in the query IDR, step 1 finds the best scoring length k fragment
 
 
 
+quickstart
+==========
+
+Here's a quick example to get you started:
+
+.. code-block:: python
+
+    import pairk
+
+    # Load example dataset
+    ex1 = pairk.example1
+
+    # Perform k-mer alignment
+    aln_results = pairk.pairk_alignment(idr_dict_in=ex1.idr_dict, query_id=ex1.query_id, k=5, matrix_name="EDSSMat50")
+
+    # Calculate conservation
+    conservation_results = pairk.calculate_conservation(aln_results)
+
+    # Plot conservation scores
+    conservation_results.plot_conservation_mosaic(position=0)
+
 
 

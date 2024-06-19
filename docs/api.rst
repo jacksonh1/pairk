@@ -10,7 +10,9 @@ main pairk functions
 
 .. automodule:: pairk
    :members:
-   :show-inheritance:
+
+
+.. :show-inheritance:
 
 
 single k-mer functions

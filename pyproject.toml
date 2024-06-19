@@ -22,6 +22,17 @@ requires-python = ">=3.8"
 # Declare any run-time dependencies that should be installed with the package.
 dependencies = [
     "importlib-resources;python_version<'3.10'",
+    "numpy",
+    "pandas",
+    "torch",
+    "torchvision",
+    "biopython",
+    "fair-esm",
+    "transformers",
+    "alfpy",
+    "logomaker",
+    "matplotlib",
+    "seaborn",
 ]
 
 # Update the urls once the hosting is set up.

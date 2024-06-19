@@ -25,11 +25,11 @@
 # ## brief overview of pairk
 #
 # Pairk can be divided into 2 parts:
-# 1. `pairk_aln` - pairwise kmer alignment. Aligns each k-mer in a query sequence with each sequence in a set of homologs. The alignment is gapless and performed pairwise. For each k-mer in the query sequence, the result is a set of the best matching k-mers from each homolog. We call this set of k-mers a "pseudo-MSA". The k-mer alignment step can be performed via a scoring matrix (similar to a traditional alignment), or via ESM2 embeddings. These are explained in more detail below.
+# 1. Pairwise kmer alignment. Aligns each k-mer in a query sequence with each sequence in a set of homologs. The alignment is gapless and performed pairwise. For each k-mer in the query sequence, the result is a set of the best matching k-mers from each homolog. We call this set of k-mers a "pseudo-MSA". The k-mer alignment step can be performed via a scoring matrix (similar to a traditional alignment), or via ESM2 embeddings. These are explained in more detail below.
 # 2. `pairk_conservation` - scores the conservation of the pseudo-MSAs via columnwise conservation scores.
 
 # %% [markdown]
-# # Step 1. pairk_aln
+# # Step 1. Pairwise kmer alignment
 
 # %% [markdown]
 # The basic input for step 1 is:
@@ -57,9 +57,7 @@ import pairk
 ex1 = pairk.example1
 
 # %% [markdown]
-# This example is imported as an object but it just holds the arguments that we need for `pairk_aln`:<br> 
-# - the IDR sequences in a dictionary - `ex1.idr_dict`<br>
-# - the query id - `ex1.query_id`<br>
+# This example is imported as a python object and holds the data that we need for inputs to the k-mer alignment methods for convenience.
 
 # %%
 for id,seq in ex1.idr_dict.items():
@@ -201,6 +199,9 @@ print(aln_results)
 aligner = pairk.make_aligner('EDSSMat50')
 
 # %%
+# pairk.pairk_alignment_needleman?
+
+# %%
 aln_results_needleman = pairk.pairk_alignment_needleman(
     idr_dict_in=ex1.idr_dict, 
     query_id=ex1.query_id,
@@ -213,6 +214,9 @@ aln_results_needleman = pairk.pairk_alignment_needleman(
 
 # %%
 (aln_results.position_matrix == aln_results_needleman.position_matrix).all().all()
+
+# %% [markdown]
+# ---
 
 # %% [markdown]
 # ## ESM2 embedding distance method

@@ -138,13 +138,53 @@ def get_idr_embedding_dict(
 
 
 def pairk_alignment_embedding_distance(
-    full_length_dict_in: dict,
+    full_length_dict_in: dict[str, str],
     idr_position_map: dict[str, list[int]],
     query_id: str,
     k: int,
     mod: esm_tools.ESM_Model,
     device: str = "cuda",
 ):
+    """run pairwise k-mer alignment method using sequence embeddings from the
+    ESM2 protein large language model to find the best k-mer matches from each
+    homolog.
+
+    Sequence embeddings are calculated for each full length sequence in the
+    input dictionary. The `idr_position_map` dictionary is used to extract the
+    IDR and the IDR embeddings from each sequence. The Euclidean distance is
+    calculated between each query k-mer embedding slice and each ortholog k-mer
+    embedding slice to find the best matching ortholog k-mer from each ortholog.
+
+
+    Parameters
+    ----------
+    full_length_dict_in : dict[str, str]
+        input sequences in dictionary format with the key being the sequence id and
+        the value being the sequence as a string
+    idr_position_map : dict[str, list[int]]
+        a dictionary where the keys are the sequence ids in `full_length_dict_in`
+        and the values are the start and end positions of the IDR in the sequence
+        (using python indexing). This is used to slice out the IDR
+        embeddings/sequences from the full-length embeddings/sequences.
+    query_id : str
+        the id of the query sequence within the `full_length_dict_in` dictionary
+        and the `idr_position_map` dictionary. The query id must be present in
+        both dictionaries.
+    k : int
+        the length of the k-mers to use for the alignment
+    mod : esm_tools.ESM_Model
+        ESM2 model used to generate the embeddings
+    device : str, optional
+        whether to use cuda or cpu for pytorch, must be either "cpu" or "cuda",
+        by default "cuda". If "cuda" fails, it will default to "cpu". This
+        argument is passed to the `esm_tools.ESM_Model.encode` method.
+
+    Returns
+    -------
+    pairwise_tools.PairkAln
+        an object containing the alignment results. See the `pairk.PairkAln`
+        class for more information.
+    """
     _exceptions.check_queryid_in_idr_dict(full_length_dict_in, query_id)
     _exceptions.check_queryid_in_idr_dict(idr_position_map, query_id)
     assert set(full_length_dict_in.keys()) == set(

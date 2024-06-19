@@ -86,7 +86,8 @@ class PairkConservation:
     k : int
         the length of the query k-mers.
     bg_scores : np.ndarray
-        the background conservation scores used to calculate the z-scores.
+        the background conservation scores used to calculate the z-scores. This
+        is just a flattened version of the score_arr.
     n_bg_scores : int
         the number of background scores used to calculate the z-scores.
     n_bg_kmers : int
@@ -132,6 +133,30 @@ class PairkConservation:
         score_type: str = "z_score",
         position_mask: np.ndarray | None = None,
     ):
+        """get the average conservation score for a query k-mer, averaged
+        across each position in the k-mer
+
+        Parameters
+        ----------
+        position : int
+            The starting position of the k-mer in the query sequence.
+        score_type : str, optional
+            which score to use, must be either "score" or "z_score", by default "z_score"
+        position_mask : np.ndarray | None, optional
+            A position mask to exclude specific positions of the query k-mer
+            from the average, by default None. Must have a length of self.k and
+            should be 1 for positions to include and 0 for positions to exclude.
+
+        Returns
+        -------
+        floating[Any]
+            The average conservation score across the query k-mer positions.
+
+        Raises
+        ------
+        ValueError
+            If the score_type is not "score" or "z_score"
+        """
         if score_type == "score":
             scores = np.copy(self.score_arr[position, :])
         elif score_type == "z_score":
@@ -161,8 +186,23 @@ class PairkConservation:
     def plot_background_distribution(
         self,
         ax: matplotlib.axes.Axes | None = None,
-        bins: int = 20,
+        bins=20,
     ):
+        """plot the background conservation scores as a histogram
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes | None, optional
+            if provided, the histogram will be plotted on the provided axes. If
+            None, a new axes will be created. by default None
+        bins : int, other, optional
+            passed to the `plt.hist` matplotlib function, by default 20
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            matplotlib axes with the background conservation score histogram
+        """
         ax = self._create_axes_if_none(ax)
         ax.hist(self.bg_scores, bins=bins)
         # ax.set_title("Background")
@@ -185,6 +225,28 @@ class PairkConservation:
         score_type: str = "score",
         ax: matplotlib.axes.Axes | None = None,
     ):
+        """plot the conservation scores as a bar plot
+
+        Parameters
+        ----------
+        position : int
+            starting position of the k-mer in the query sequence.
+        score_type : str, optional
+            which score to use, must be either "score" or "z_score", by default "score"
+        ax : matplotlib.axes.Axes | None, optional
+            if provided, the barplot will be plotted on the provided axes. If
+            None, a new axes will be created. by default None
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            matplotlib axes with the plot
+
+        Raises
+        ------
+        ValueError
+            If the score_type is not "score" or "z_score"
+        """
         ax = self._create_axes_if_none(ax)
         if score_type == "score":
             scores = np.copy(self.score_arr[position, :])
@@ -201,6 +263,23 @@ class PairkConservation:
         position: int,
         ax: matplotlib.axes.Axes | None = None,
     ):
+        """plot the query k-mer "pseudo-MSA" as a sequence logo where the residue
+        height is proportional to the number of homologs with that residue at
+        that position. The query k-mer is included in the "pseudo-MSA"
+
+        Parameters
+        ----------
+        position : int
+            The starting position of the k-mer in the query sequence.
+        ax : matplotlib.axes.Axes | None, optional
+            if provided, the sequence logo will be plotted on the provided axes.
+            If None, a new axes will be created. by default None
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            matplotlib axes with the plot
+        """
         ax = self._create_axes_if_none(ax)
         pseudo_aln = list(self.orthokmer_arr[position, :])
         query_kmer = self.query_kmers[position]
@@ -213,7 +292,9 @@ class PairkConservation:
         score_type: str = "z_score",
         figsize: tuple[int, int] = (15, 5),
     ) -> tuple[matplotlib.figure.Figure, dict[str, matplotlib.axes.Axes]]:
-        """makes a mosaic plot of the conservation scores, sequence logos, and background scores for the pairk conservation results.
+        """makes a mosaic plot (with multiple subplots) of the conservation
+        scores, sequence logos, and background scores for the pairk
+        conservation results.
 
         Parameters
         ----------
@@ -222,6 +303,8 @@ class PairkConservation:
         score_type : str, optional
             either 'score' or 'z_score'. The type of score to plot on the bar
             plot, by default "score"
+        figsize : tuple[int, int], optional
+            the size of the figure, by default (15, 5)
 
         Returns
         -------
@@ -235,6 +318,21 @@ class PairkConservation:
         return fig, axd
 
     def write_results_to_file(self, filename: str | Path):
+        """write the PairkConservation object results to a file
+
+        note - to avoid having to pickle the numpy arrays, the orthokmer_arr is
+        converted to numpy strings before saving
+
+        Parameters
+        ----------
+        filename : str | Path
+            the filename to save the results to.
+
+        Returns
+        -------
+        str | Path
+            the filename that the results were saved to.
+        """
         # save np arrays to a file
         # to avoid having to pickle the np arrays, we convert the orthokmer_arr
         # to numpy strings (np.str_) before saving
@@ -248,6 +346,19 @@ class PairkConservation:
 
     @classmethod
     def read_results_from_file(cls, filename: str | Path):
+        """read the pairk conservation results from a file and return a
+        PairkConservation object
+
+        Parameters
+        ----------
+        filename : str | Path
+            The filename to read the results from.
+
+        Returns
+        -------
+        pairk.backend.conservation.kmer_conservation.PairkConservation
+            a PairkConservation object containing the results from the file.
+        """
         # load np arrays from a file
         npzfile = np.load(filename)
         orthokmer_arr = npzfile["orthokmer_arr"]
