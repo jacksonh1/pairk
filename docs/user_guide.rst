@@ -178,6 +178,16 @@ example: access the best matching k-mers for the query k-mer at position 4 using
 
     aln_results.get_pseudo_alignment(4)
 
+
+Note - the k-mers are defined by position rather than sequence. You could easily make a variant of this method that uses the unique sequences instead. It would make the method slightly faster. The reason that I didn't do this is because I wanted to mimic the LLM embedding functions of Pairk (described below), where identical k-mers have different embeddings and thus are treated as different k-mers. Inclusion of duplicate k-mers does alter the final z-scores, so it's something to be aware of.
+To see what I'm refering to, try:
+
+.. code-block:: python
+
+    aln_results.orthokmer_matrix.loc[[75, 113, 127, 157]].T
+
+
+
 example: plot a heatmap of the matrices:
 
 .. code-block:: python
@@ -258,16 +268,16 @@ The inputs are:
 * ``mod`` - a ``pairk.ESM_Model`` object. This is the ESM2 model used to generate the embeddings. The code for the ESM2 embeddings is adapted from the kibby conservation tool [link](https://github.com/esbgkannan/kibby) DOI: 10.1093/bib/bbac599
 * ``device`` - whether to use cuda or your cpu for pytorch, should be either "cpu" or "cuda". (default is "cuda"). If "cuda" fails, it will default to "cpu". This argument is passed to the ``pairk.ESM_Model.encode`` method
 
+Full length sequences (``full_length_dict_in``) are required to generate the embeddings because each embedding is dependent upon the neighboring residues. The embeddings for just an IDR are different than the embeddings for a full length sequences. Thus, the full length embeddings are gathered first, and then the IDR embeddings are sliced out for the k-mer alignment. 
+
+The ``idr_position_map`` is used to slice out the IDR embeddings, and there must be IDR positions for each sequence in the input sequence set.
+
+The ``mod`` input is required so that you can preload the ESM model before running the method. You preload the ESM model with ``pairk.ESM_Model()``
+
 .. autoclass:: pairk.ESM_Model
    :members:
    :undoc-members:
    :no-index: 
-
-The ``mod`` input is required so that you can preload the ESM model before running the method.
-
-Full length sequences (``full_length_dict_in``) are required to generate the embeddings because each embedding is dependent upon the neighboring residues. The embeddings for just an IDR are different than the embeddings for a full length sequences. Thus, the full length embeddings are gathered first, and then the IDR embeddings are sliced out for the k-mer alignment. 
-
-The ``idr_position_map`` is used to slice out the IDR embeddings, and there must be IDR positions for each sequence in the input sequence set.
 
 There is currently no way to use pre-generated embeddings for this method, but this functionality would be very easy to add.
 
@@ -349,12 +359,13 @@ k-mer conservation results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``pairk.calculate_conservation`` method returns a ``PairkConservation`` object.
-The returned ``PairkConservation`` object has matrices with similar structure as ``PairkAln`` object matrices, except that they are numpy arrays instead of pandas dataframes.
 
 .. autoclass:: pairk.PairkConservation
    :members:
    :undoc-members:
    :no-index: 
+
+The returned ``PairkConservation`` object has matrices with similar structure as ``PairkAln`` object matrices, except that they are numpy arrays instead of pandas dataframes.
 
 * orthokmer_arr - the best matching k-mers from each homolog for each query k-mer - analogous to the orthokmer_matrix in the ``PairkAln`` object
 * score_arr - the conservation scores for each position in the pseudo-MSA of each query k-mer
@@ -479,6 +490,6 @@ Step 1 and Step 2 can be modified, but this requires a bit of knowledge of the i
 * ``pairk/__init__.py`` - User-facing functions are imported into the main ``pairk/__init__.py`` file so that they are accessible when the package is imported. I think it also simplifies the import statements for users. Use this __init__ file to find where pairk's main functions are defined within the directory structure if you want to modify any of the functions above. You could also modify the __init__ file to make any new functions you create easy to access.
 * ``pairk/data/`` - data installed along with the package is stored here. This includes the scoring matrices and example data. The scoring matrices are stored in the ``pairk/data/matrices/`` folder.
 
-The easiest customization to make would be to add a new scoring matrix. To do this, you would add a new matrix file to the ``pairk/data/matrices/`` folder. The tools should be able to automatically find the matrix file and add it to the available scoring matrices. It will be named after the name of the file. Use ``pairk.print_available_matrices()`` to confirm (make sure you've installed pairk as an editable install for changes to take affect). You could then use the new matrix in relevant methods by passing the matrix name as an argument. If this doesn't work, you may need to modify the code that reads the matrices in the ``pairk.backend.tools.matrices.py`` file.
+The easiest customization to make would be to add a new scoring matrix. To do this, you would add a new matrix file to the ``pairk/data/matrices/`` folder. The tools should be able to automatically find the matrix file and add it to the available scoring matrices. It will be named after the name of the file. Use ``pairk.print_available_matrices()`` to confirm (make sure you've installed pairk as an editable install for changes to take affect). You could then use the new matrix in relevant methods by passing the matrix name as an argument. If this doesn't work, you may need to modify the code that reads the matrices in the ``pairk/backend/tools/matrices/py`` file.
 
 
