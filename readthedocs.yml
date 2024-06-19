@@ -6,7 +6,7 @@ version: 2
 build:
   os: ubuntu-22.04
   tools:
-    python: "miniconda3-4.7"
+    python: "3.10"
   # image: latest
 
 formats:
@@ -15,11 +15,12 @@ formats:
 
 python:
   install:
+    - requirements: docs/requirements.txt
     - method: pip
       path: .
 
-conda:
-  environment: docs/requirements.yaml
+# conda:
+#   environment: docs/requirements.yaml
 
 sphinx:
   configuration: docs/conf.py
