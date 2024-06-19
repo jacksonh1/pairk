@@ -84,11 +84,11 @@ Step 1: pairwise k-mer alignment
 
 there are 2 main ways to run the k-mer alignment step:
 
-1. `Scoring matrix alignment`_
+* `Scoring matrix alignment`_
 
    * *These methods use a scoring matrix to score the query k-mer to homolog k-mer matches and select the best scoring match from each homolog.*
 
-2. `Embedding distance alignment`_
+* `Embedding distance alignment`_
 
    * *This method uses the Euclidean distance between the query k-mer residue embeddings from a protein large language model (such as ESM2) and homolog k-mer residue embeddings and selects the lowest distance match from each homolog.*
 
@@ -98,11 +98,11 @@ Scoring matrix alignment
 
 There are 2 implementations of the scoring matrix method:
 
-1. ``pairk.pairk_alignment`` - the original implementation. This is a bit slow because it does an exhaustive comparison of all k-mers in the query sequence with all k-mers in the homologs.
-2. ``pairk.pairk_alignment_needleman`` - a faster implementation that uses the Needleman-Wunsch algorithm (as implemented in Biopython) to align the k-mers. This is faster and should yield the same results.
+* ``pairk.pairk_alignment`` - the original implementation. This is a bit slow because it does an exhaustive comparison of all k-mers in the query sequence with all k-mers in the homologs.
+* ``pairk.pairk_alignment_needleman`` - a faster implementation that uses the Needleman-Wunsch algorithm (as implemented in Biopython) to align the k-mers. This is faster and should yield the same results.
 
 
-The basic inputs for these functions are:
+inputs common to both functions are:
 
 * ``idr_dict_in``: a dictionary of IDR sequences, where the keys are the sequence ids and the values are the sequences. Includes the query sequence (the sequence to split into k-mers and align with the homologs).
 * ``query_id``: a query sequence id (the sequence to split into k-mers and align with the homologs). This id should be present in ``idr_dict_in``.

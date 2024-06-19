@@ -20,14 +20,13 @@ or for an editable install that you can modify:
     pip install -e .
 
 
+Pairk Overview
+""""""""""""""
 
 .. image:: ./images/fragpair_cartoon_v2.png
     :align: center
     :width: 800
 
-
-Pairk Overview
-""""""""""""""
 
 The pairk pipeline is composed of two main steps:
 
