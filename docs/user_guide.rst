@@ -312,9 +312,9 @@ pairk.calculate_conservation
 
 the main method for Step 2 is the ``pairk.calculate_conservation`` method. It simply takes the ``PairkAln`` object as input, along with a columnwise conservation scoring function and returns a ``PairkConservation`` object.
 
-The columnwise conservation scoring function can be any function that takes a string of residues (a column of an alignment) as an input and returns a float (conservation score). You can use custom functions here, but pairk comes with a few built-in functions from Capra and Singh 2007 (DOI: 10.1093/bioinformatics/btm270) available in the ``pairk.pairk_conservation.capra_singh_functions`` module. The ``pairk.pairk_conservation.capra_singh_functions.property_entropy`` is the default function used by ``pairk.calculate_conservation``.
+The columnwise conservation scoring function can be any function that takes a string of residues (a column of an alignment) as an input and returns a float (conservation score). You can use custom functions here, but pairk comes with a few built-in functions from Capra and Singh 2007 (DOI: 10.1093/bioinformatics/btm270) available in the ``pairk.capra_singh_functions`` module. The ``pairk.capra_singh_functions.property_entropy`` is the default function used by ``pairk.calculate_conservation``.
 
-.. automodule:: pairk.pairk_conservation.capra_singh_functions
+.. automodule:: pairk.capra_singh_functions
    :members:
    :undoc-members:
    :no-index: 
@@ -338,7 +338,7 @@ example usage: using a different conservation scoring function:
 
 .. code-block:: python
 
-    from pairk.pairk_conservation import capra_singh_functions
+    from pairk import capra_singh_functions
     column = 'NNNNNNNNNKNSNNNNNNNNSSN'
     print(capra_singh_functions.shannon_entropy(column))
 
