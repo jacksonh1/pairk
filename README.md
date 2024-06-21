@@ -12,6 +12,26 @@ This work was supported by the National Institutes of Health under Award Number 
 
 
 ### Installation
+not yet published to pypi
+
+#### Current recommended installation:
+to ensure that you have the correct dependencies (specically the correct version of biopython),
+we recommend installing in a conda environment with the provided environment.yml file with the following commands:
+```bash
+git clone https://github.com/jacksonh1/pairk.git
+cd pairk
+conda env create -f=environment.yml
+```
+Then activate the environment with:
+```bash
+conda activate pairk
+```
+then install pairk from github with:
+```bash
+pip install pairk@git+git://github.com/jacksonh1/pairk.git
+```
+
+#### very near future installation instructions (after publication to pypi):
 
 ```bash
 pip install pairk
@@ -22,6 +42,20 @@ git clone https://github.com/jacksonh1/pairk.git
 cd pairk
 pip install -e .
 ```
+
+We suggest using a virtual environment to install pairk, such as conda or venv.
+To create a conda environment with the necessary dependencies, run the following commands:
+```bash
+git clone https://github.com/jacksonh1/pairk.git
+cd pairk
+conda env create -f=environment.yml
+```
+Then activate the environment with:
+```bash
+conda activate pairk
+```
+and install pairk with one of the above pip commands.
+
 
 ### Documentation
 see the [pairk documentation](https://pairk.readthedocs.io/en/latest/).

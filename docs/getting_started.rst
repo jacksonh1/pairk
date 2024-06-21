@@ -47,7 +47,7 @@ in informal pseudocode, the algorithm looks like this:
            store the score, position, and sequence of the best scoring homologous k-mer in DataFrames
 
 
-2: score the relative conservation of each k-mer in the query IDR
+2: k-mer conservation
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 For each k-mer in the query IDR, step 2 constructs a pseudo-MSA composed of the query k-mer and the best scoring k-mers from each homologous IDR. The conservation of each position in the pseudo-MSA is scored using a column-wise scoring function. The scores are then converted to z-scores to give the conservation relative to other residues in the query IDR.

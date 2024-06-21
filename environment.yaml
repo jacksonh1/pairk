@@ -5,11 +5,11 @@ channels:
 
 dependencies:
     # Base depends
-  - python
+  - python>=3.10
   - pip
   - numpy
   - pandas
-  - biopython
+  - biopython>=1.80
   - seaborn
   - matplotlib
   - pip:
