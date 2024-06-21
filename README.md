@@ -26,10 +26,12 @@ Then activate the environment with:
 ```bash
 conda activate pairk
 ```
-then install pairk from github with:
+then install pairk with:
 ```bash
-pip install pairk@git+git://github.com/jacksonh1/pairk.git
+pip install .
 ```
+
+<!-- pip install pairk@git+git://github.com/jacksonh1/pairk.git -->
 
 #### very near future installation instructions (after publication to pypi):
 
