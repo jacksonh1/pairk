@@ -29,9 +29,9 @@ Pairk Overview
 
 
 
-.. image:: ./images/f1-example_MSA_problems.png
-    :align: center
-    :width: 800
+.. .. image:: ./images/f1-example_MSA_problems.png
+..     :align: center
+..     :width: 800
 
 
 The pairk pipeline is composed of two main steps:
