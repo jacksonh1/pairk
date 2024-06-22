@@ -55,6 +55,32 @@ def calculate_conservation_arrays(
     orthokmer_df: pd.DataFrame,
     score_func: Callable = property_entropy,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """calculate the conservation scores and z-scores from a dataframe of
+    ortholog k-mers
+
+    Parameters
+    ----------
+    orthokmer_df : pd.DataFrame
+        the best scoring k-mer from each ortholog for each query k-mer. The
+        index should be the query k-mer start positions, and the columns should
+        be 'query_kmer' and the ids of the orthologs.
+    score_func : Callable, optional
+        A function to calculate conservation scores in a columnwise manner, by
+        default it is the property_entropy function from Capra and Singh 2007,
+        DOI: 10.1093/bioinformatics/btm270 located in the
+        `pairk.pairk_conservation.capra_singh_functions` module.
+
+    Returns
+    -------
+    tuple[np.ndarray, np.ndarray, np.ndarray]
+        returns the orthokmer_df as a numpy array, the conservation scores as a
+        numpy array, and the z-scores as a numpy array.
+
+    Raises
+    ------
+    ValueError
+        If the orthokmer_df contains non-string elements
+    """
     if not all([type(i) == str for i in orthokmer_df.values.flatten()]):
         raise ValueError("Orthokmer matrix contains non-string elements")
     # sort orthokmer_df by the index
@@ -395,10 +421,10 @@ def calculate_conservation(
     PairkConservation
         PairkConservation object containing the conservation scores and z-scores for each k-mer position.
     """
-    ok_arr, score_arr, z_score_arr = calculate_conservation_arrays(
+    orthokmer_arr, score_arr, z_score_arr = calculate_conservation_arrays(
         pairk_aln_results.orthokmer_matrix, score_func
     )
-    return PairkConservation(ok_arr, score_arr, z_score_arr)
+    return PairkConservation(orthokmer_arr, score_arr, z_score_arr)
 
 
 # %%

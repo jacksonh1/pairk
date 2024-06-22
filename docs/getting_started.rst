@@ -28,6 +28,12 @@ Pairk Overview
     :width: 800
 
 
+
+.. image:: ./images/f1-example_MSA_problems.png
+    :align: center
+    :width: 800
+
+
 The pairk pipeline is composed of two main steps:
 
 
@@ -81,6 +87,30 @@ Here's a quick example to get you started:
 
     # Plot conservation scores
     conservation_results.plot_conservation_mosaic(position=0)
+
+    # save the results
+    conservation_results.write_to_file('example1_results.csv')
+
+
+Check out PairK's main functions and classes:
+
+* step 1, pairwise k-mer alignment functions
+
+    * :func:`pairk.pairk_alignment` - uses a scoring matrix to align the k-mers to each homolog
+    * :func:`pairk.pairk_alignment_needleman` - uses a scoring matrix to align the k-mers to each homolog (use pairk.make_aligner to create the aligner object before using this function)
+    * :func:`pairk_alignment_embedding_distance` - uses embeddings from ESM2 to align the k-mers to each homolog. (use pairk.ESM_Model to load the model before using this function)
+    * :class:`pairk.PairkAln` - pairkwise k-mer alignment results are returned as an instance of this class. See the associated methods for more details on how to interact with the results.
+
+* step 2, k-mer conservation functions
+
+    * :func:`pairk.calculate_conservation` - calculates the conservation of the k-mers from a pairk.PairkAln object
+    * :class:`pairk.PairkConservation` - conservation results are returned as an instance of this class. See the associated methods for more details on how to interact with the results.
+
+
+* utility functions
+
+    * :func:`pairk.print_available_matrices` - prints the available scoring matrices
+    * :class:`pairk.FastaImporter` - class to import fasta files and return the sequences in different formats
 
 
 see the `User Guide <https://pairk.readthedocs.io/en/latest/user_guide.html>`_ page for more details on how to use pairk.
