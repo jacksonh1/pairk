@@ -9,7 +9,20 @@ motif conservation in IDRs through pairwise k-mer alignment
 
 This work was supported by the National Institutes of Health under Award Number R35GM149227. The content is solely the responsibility of the authors and does not necessarily represent the official views of the National Institutes of Health.
 
+### Features
+Quantify the relative conservation of a small sequence motif in intrinsically disordered regions (IDRs) of proteins, without the need for a multiple sequence alignment (MSA).
 
+The pairk method:
+![pairk method](docs/images/fragpair_cartoon_v2.png)
+
+
+Example - PairK vs MSA conservation:
+<p align="center">
+  <img src="docs/images/f1-example_MSA_problems.png" width="500">
+</p>
+
+
+<!-- ![PairK vs MSA conservation](docs/images/f1-example_MSA_problems.png) -->
 
 ### Installation
 not yet published to pypi

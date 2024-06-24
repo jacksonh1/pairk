@@ -23,18 +23,28 @@ or for an editable install that you can modify:
 Pairk Overview
 """"""""""""""
 
+The pairk pipeline:
+
 .. image:: ./images/fragpair_cartoon_v2.png
     :align: center
     :width: 800
 
 
+SLiM conservation from an MSA vs. pairk:
 
-.. .. image:: ./images/f1-example_MSA_problems.png
-..     :align: center
-..     :width: 800
+.. image:: ./images/f1-example_MSA_problems.png
+    :align: center
+    :width: 400
 
 
-The pairk pipeline is composed of two main steps:
+.. raw:: html
+
+   <br>
+   <br>
+   <br>
+
+
+**The pairk pipeline is composed of two main steps:**
 
 
 1: Pairwise k-mer alignment
