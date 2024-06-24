@@ -125,7 +125,7 @@ Check out PairK's main functions and classes:
 
 see the `User Guide <https://pairk.readthedocs.io/en/latest/user_guide.html>`_ page for more details on how to use pairk.
 
-See our `tutorial notebook <https://github.com/jacksonh1/pairk/blob/main/demo/demo.ipynb>`_ for a notebook-based tutorial on how to use pairk.
+See our `tutorial notebook <https://github.com/jacksonh1/pairk/blob/main/demo/pairk_tutorial.ipynb>`_ for a notebook-based tutorial on how to use pairk.
 
 See the `API documentation <https://pairk.readthedocs.io/en/latest/api.html>`_ for more details on the functions and classes in pairk.
 

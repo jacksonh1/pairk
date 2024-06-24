@@ -22,48 +22,16 @@ Example - PairK vs MSA conservation:
 </p>
 
 
+See the demo/tutorial jupyter notebook here: [demo/pairk_tutorial.ipynb](demo/pairk_tutorial.ipynb)
+
 <!-- ![PairK vs MSA conservation](docs/images/f1-example_MSA_problems.png) -->
 
 ### Installation
-not yet published to pypi
+<!-- not yet published to pypi -->
 
-#### Current recommended installation:
-to ensure that you have the correct dependencies (specically the correct version of biopython),
-we recommend installing in a conda environment with the provided environment.yml file with the following commands:
-```bash
-git clone https://github.com/jacksonh1/pairk.git
-cd pairk
-conda env create -f=environment.yml
-```
-Then activate the environment with:
-```bash
-conda activate pairk
-```
-then install pairk with:
-```bash
-pip install .
-```
-or for an editable install that you can modify:
-```bash
-pip install -e .
-```
-
-<!-- pip install pairk@git+git://github.com/jacksonh1/pairk.git -->
-
-<!-- #### very near future installation instructions (after publication to pypi): -->
-
-<!-- ```bash -->
-<!-- pip install pairk -->
-<!-- ``` -->
-<!-- or for an editable install that you can modify: -->
-<!-- ```bash -->
-<!-- git clone https://github.com/jacksonh1/pairk.git -->
-<!-- cd pairk -->
-<!-- pip install -e . -->
-<!-- ``` -->
-
-<!-- We suggest using a virtual environment to install pairk, such as conda or venv. -->
-<!-- To create a conda environment with the necessary dependencies, run the following commands: -->
+<!-- #### Current recommended installation: -->
+<!-- to ensure that you have the correct dependencies (specically the correct version of biopython), -->
+<!-- we recommend installing in a conda environment with the provided environment.yml file with the following commands: -->
 <!-- ```bash -->
 <!-- git clone https://github.com/jacksonh1/pairk.git -->
 <!-- cd pairk -->
@@ -73,7 +41,52 @@ pip install -e .
 <!-- ```bash -->
 <!-- conda activate pairk -->
 <!-- ``` -->
-<!-- and install pairk with one of the above pip commands. -->
+<!-- then install pairk with: -->
+<!-- ```bash -->
+<!-- pip install . -->
+<!-- ``` -->
+<!-- or for an editable install that you can modify: -->
+<!-- ```bash -->
+<!-- pip install -e . -->
+<!-- ``` -->
+
+<!-- pip install pairk@git+git://github.com/jacksonh1/pairk.git -->
+
+<!-- #### very near future installation instructions (after publication to pypi): -->
+
+```bash
+pip install pairk
+```
+or for an editable install that you can modify:
+```bash
+git clone https://github.com/jacksonh1/pairk.git
+cd pairk
+pip install -e .
+```
+
+#### virtual environment installation:
+
+We suggest using a virtual environment to install pairk, such as conda or venv. 
+You can create a new environment and just install pairk as above, or you can 
+use the provided environment.yml file to create a new environment with the 
+necessary dependencies like so:
+```bash
+git clone https://github.com/jacksonh1/pairk.git
+cd pairk
+conda env create -f=environment.yml
+```
+Then activate the environment with:
+```bash
+conda activate pairk
+```
+and install pairk with either:
+```bash
+pip install .
+```
+or for an editable install that you can modify:
+```bash
+pip install -e .
+```
 
 
 ### Documentation

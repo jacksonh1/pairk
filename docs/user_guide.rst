@@ -7,7 +7,7 @@ User Guide
     :depth: 5
     :local:
 
-see the `tutorial notebook <https://github.com/jacksonh1/pairk/blob/main/demo/demo.ipynb>`_ for an interactive version of the guide (most of the code examples are taken from the notebook), where you can see the outputs of the code cells, the plots, and run the code yourself. The docstrings for the functions/classes look a bit better here though.
+see the `tutorial notebook <https://github.com/jacksonh1/pairk/blob/main/demo/pairk_tutorial.ipynb>`_ for an interactive version of the guide (most of the code examples are taken from the notebook), where you can see the outputs of the code cells, the plots, and run the code yourself. The docstrings for the functions/classes look a bit better here though.
 
 ********
 Overview
