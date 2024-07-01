@@ -28,6 +28,10 @@ def run_pairwise_kmer_emb_aln(
     embedding_dict: dict,
     k: int,
 ):
+    """
+    This function was originally too slow but was vectorized/optimized by
+    Foster Birnbaum. Thanks Foster!
+    """
     # get the query sequence and remove it from the embedding_dict
     ref_seq_str, ref_seq_embedding = embedding_dict.pop(query_id)
     kmers = tools.gen_kmers(ref_seq_str, k)
@@ -65,9 +69,11 @@ def run_pairwise_kmer_emb_aln(
     for ortholog_id, v in embedding_dict.items():
         ortholog_seq = v[0]
         ortholog_embedding = v[1]
-        if ortholog_seq is None or ortholog_embedding is None:
+        if ortholog_seq == "no idr" or ortholog_embedding == "no idr":
+            orthokmer_df.loc[positions, ortholog_id] = "-" * k
             continue
         if len(ortholog_seq) < k:
+            orthokmer_df.loc[positions, ortholog_id] = "-" * k
             continue
 
         # Make expanded ortholog tensor
@@ -110,8 +116,9 @@ def get_idr_embeddings(
 ):
     idr_str = seq_str[idr_start : idr_end + 1]
     if len(idr_str) == 0:
-        print("no idr")
-        return None, None
+        return "no idr", "no idr"
+        # print("no idr")
+        # return None, None
     orth_tensor = mod.encode(seq_str, device=device)
     idr_ortho_tensor = orth_tensor[idr_start + 1 : idr_end + 2, :]  # type: ignore # +1 to account for the start token
     return idr_str, idr_ortho_tensor
@@ -147,7 +154,11 @@ def pairk_alignment_embedding_distance(
 ):
     """run pairwise k-mer alignment method using sequence embeddings from the
     ESM2 protein large language model to find the best k-mer matches from each
-    homolog.
+    homolog. If a ortholog IDR is shorter than the k-mer, a string of "-"
+    characters ("-"*k) is assigned as the best matching ortholog k-mer for that
+    ortholog
+
+    **Note**: if there are multiple top-scoring matches, only one is returned.
 
     Sequence embeddings are calculated for each full length sequence in the
     input dictionary. The `idr_position_map` dictionary is used to extract the

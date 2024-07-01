@@ -85,10 +85,10 @@ def pairk_alignment(
     k: int,
     matrix_name: str = "EDSSMat50",
 ) -> pairwise_tools.PairkAln:
-    """run pairwise k-mer alignment method using an exhaustive comparison of k-mers. 
-    Each query k-mer is scored against each ortholog k-mer to find the best matching 
+    """run pairwise k-mer alignment method using an exhaustive comparison of k-mers.
+    Each query k-mer is scored against each ortholog k-mer to find the best matching
     ortholog k-mer in each ortholog. If a ortholog IDR is shorter than the k-mer, a
-    string of "-" characters assigned as the best matching ortholog k-mer for that 
+    string of "-" characters ("-"*k) is assigned as the best matching ortholog k-mer for that
     ortholog.
 
     **Note**: if there are multiple top-scoring matches, only one is returned.
@@ -96,7 +96,7 @@ def pairk_alignment(
     Parameters
     ----------
     idr_dict_in : dict[str, str]
-        input sequences in dictionary format with the key being the sequence id and 
+        input sequences in dictionary format with the key being the sequence id and
         the value being the sequence as a string
     query_id : str
         the id of the query sequence within the `idr_dict_in` dictionary
@@ -168,9 +168,7 @@ def pairk_alignment_single_kmer(
         if len(ortholog_idr) < len(kmer):
             best_subseqs[ortholog_id] = "-" * len(kmer)
             continue
-        query_k_scores = score_kmer_2_seq_dict_dict(
-            kmer, ortholog_idr, scoremat_dict
-        )
+        query_k_scores = score_kmer_2_seq_dict_dict(kmer, ortholog_idr, scoremat_dict)
         best_score, best_subseq, best_pos = best_from_scores(
             ortholog_idr, query_k_scores, len(kmer)
         )

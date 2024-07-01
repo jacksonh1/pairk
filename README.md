@@ -12,14 +12,14 @@ This work was supported by the National Institutes of Health under Award Number 
 ### Features
 Quantify the relative conservation of a small sequence motif in intrinsically disordered regions (IDRs) of proteins, without the need for a multiple sequence alignment (MSA).
 
-The pairk method:
-![pairk method](docs/images/fragpair_cartoon_v2.png)
+<!-- The pairk method: -->
+<!-- ![pairk method](docs/images/fragpair_cartoon_v2.png) -->
 
 
-Example - PairK vs MSA conservation:
-<p align="center">
-  <img src="docs/images/f1-example_MSA_problems.png" width="500">
-</p>
+<!-- Example - PairK vs MSA conservation: -->
+<!-- <p align="center"> -->
+<!--   <img src="docs/images/f1-example_MSA_problems.png" width="500"> -->
+<!-- </p> -->
 
 
 See the demo/tutorial jupyter notebook here: [demo/pairk_tutorial.ipynb](demo/pairk_tutorial.ipynb)

@@ -14,7 +14,7 @@ repository link - https://github.com/jacksonh1/pairk
     .. grid-item-card:: Getting Started
       :margin: 0 3 0 0
       
-      Learn the basics of using pairk.
+      quick pairk startup guide
 
       .. button-link:: ./getting_started.html
          :color: primary
@@ -42,7 +42,7 @@ repository link - https://github.com/jacksonh1/pairk
     .. grid-item-card:: API Reference
       :margin: 0 3 0 0
       
-      How to use the API of pairk.
+      PairK API. The docstrings of the main functions
 
       .. button-link:: ./api.html
          :color: primary
@@ -51,6 +51,19 @@ repository link - https://github.com/jacksonh1/pairk
 
          To the API Reference.
 
+
+
+    .. grid-item-card:: References
+      :margin: 0 3 0 0
+      
+      references and acknowledgements
+
+      .. button-link:: ./references.html
+         :color: primary
+         :outline:
+         :expand:
+
+         To the References
       
 
 
@@ -62,4 +75,5 @@ repository link - https://github.com/jacksonh1/pairk
    getting_started
    user_guide
    api
+   references
 

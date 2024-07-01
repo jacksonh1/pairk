@@ -59,8 +59,8 @@ in informal pseudocode, the algorithm looks like this:
     for each k-mer at each position in the query IDR:
        for each homologous IDR:
            for each k-mer in the homologous IDR:
-               score the alignment of the two k-mers (with no gaps)
-           store the score, position, and sequence of the best scoring homologous k-mer in DataFrames
+               score the alignment of the homolog k-mer - query k-mer match (with no gaps)
+           store the score, position, and sequence of the best scoring homologous k-mer
 
 
 2: k-mer conservation
@@ -99,7 +99,7 @@ Here's a quick example to get you started:
     conservation_results.plot_conservation_mosaic(position=0)
 
     # save the results
-    conservation_results.write_to_file('example1_results.csv')
+    conservation_results.write_to_file('example1_results.npz')
 
 
 Check out PairK's main functions and classes:
@@ -128,4 +128,5 @@ see the `User Guide <https://pairk.readthedocs.io/en/latest/user_guide.html>`_ p
 See our `tutorial notebook <https://github.com/jacksonh1/pairk/blob/main/demo/pairk_tutorial.ipynb>`_ for a notebook-based tutorial on how to use pairk.
 
 See the `API documentation <https://pairk.readthedocs.io/en/latest/api.html>`_ for more details on the functions and classes in pairk.
+
 

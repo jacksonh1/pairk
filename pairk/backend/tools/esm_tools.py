@@ -73,7 +73,7 @@ class ESM_Model:
             return results
         except:
             if device != "cpu":
-                print("failed, trying CPU")
+                print(f"failed with {device}, trying cpu...")
                 return self.encode(sequence, device="cpu")
             else:
                 return
