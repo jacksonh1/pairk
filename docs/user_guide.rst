@@ -108,7 +108,7 @@ inputs common to both functions are:
 * ``query_id``: a query sequence id (the sequence to split into k-mers and align with the homologs). This id should be present in ``idr_dict``.
 * ``k``: the length of the k-mers
 
-These inputs can be generated many ways, and there are helper functions in the pairk library to help with this (coming soon). 
+These inputs can be generated many ways, and there are helper functions in the pairk library to help with this (see functions in ``pairk.utilities``). 
 
 
 pairk.pairk_alignment - slower
@@ -137,9 +137,105 @@ To see the available matrices, use the ``pairk.print_available_matrices()`` func
     pairk.print_available_matrices()
 
 
+See the `k-mer alignment results`_ section below for information on how the results are returned.
+
+
+pairk.pairk_alignment_needleman - faster
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pairk.pairk_alignment_needleman
+    :no-index: 
+
+This method returns the same results as ``pairk.pairk_alignment``, but it is faster.
+
+The difference is that the ``pairk.pairk_alignment_needleman`` method uses the Needleman-Wunsch algorithm to align the k-mers, while the ``pairk.pairk_alignment`` method uses a scoring matrix to exhaustively score the k-mer matches. ``pairk.pairk_alignment_needleman`` ensures that the alignment is gapless by using an extremely high gap opening and extension penalty (-1000000). This will ensure that the alignment is gapless, unless you use a really unusual scoring matrix with very high scores.
+
+This method takes similar arguments as ``pairk.pairk_alignment``, accept that the ``pairk.pairk_alignment_needleman`` method takes an optional ``aligner`` argument. This allows you to create the aligner before calling the method, which is useful if you want to do multiprocessing, so that you're not creating a new aligner for each process. I've found that if you create a new aligner for each process, the memory usage gets very high, as if the memory isn't being released until the entire script finishes
+
+The ``aligner`` object can be created via the ``pairk.create_aligner`` function. This function takes the name of the scoring matrix as an argument and returns the aligner object. If you don't pass the ``aligner`` argument to the ``pairk.pairk_alignment_needleman`` method, it will create a new aligner using the ``matrix_name`` argument. This is fine if you're not doing multiprocessing. If you are doing multiprocessing, I would suggest creating the aligner before calling the method. If the ``aligner`` argument is passed, the ``matrix_name`` argument is ignored.
+
+
+.. code-block:: python
+
+    # Making the aligner ahead of time to demonstrate
+    aligner = pairk.make_aligner('EDSSMat50')
+
+.. code-block:: python
+
+    aln_results_needleman = pairk.pairk_alignment_needleman(
+        idr_dict=ex1.idr_dict,
+        query_id=ex1.query_id,
+        k=5,
+        aligner=aligner
+    )
+
+Results are the same as the previous method:
+
+.. code-block:: python
+
+    (aln_results.position_matrix == aln_results_needleman.position_matrix).all().all()
+
+See the `k-mer alignment results`_ section below for information on how the results are returned.
+
+
+Embedding distance alignment
+------------------------------
+
+This method uses the Euclidean distance between the query k-mer residue embeddings and homolog k-mer residue embeddings and selects the lowest distance match from each homolog. For each homolog, it calculates the distance between the query k-mer and each k-mer in the homolog. It then selects the k-mer with the lowest distance as the best match.
+
+
+pairk.pairk_alignment_embedding_distance
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pairk.pairk_alignment_embedding_distance
+    :no-index: 
+
+
+This method generates residue embeddings using the ESM2 protein large language model. 
+
+Because residue embeddings are used, the inputs are slightly different than the previous methods. 
+
+The inputs are:
+
+* ``full_length_sequence_dict``: a dictionary of full-length sequences, where the keys are the sequence ids and the values are the sequences. This is used to generate the embeddings.
+* ``idr_position_map``: a dictionary where the keys are the full-length sequence ids and the values are the start and end positions of the IDR in the full-length sequence (using python indexing). This is used to slice out the IDR embeddings/sequences from the full-length embeddings/sequences.
+* ``query_id``: a query sequence id (the sequence to split into k-mers and align with the homologs). This id should be present in ``idr_position_map`` and ``full_length_sequence_dict``.
+* ``k`` - the length of the k-mers
+* ``mod`` - a ``pairk.ESM_Model`` object. This is the ESM2 model used to generate the embeddings. The code for the ESM2 embeddings is adapted from the kibby conservation tool [link](https://github.com/esbgkannan/kibby) DOI: 10.1093/bib/bbac599
+* ``device`` - whether to use cuda or your cpu for pytorch, should be either "cpu" or "cuda". (default is "cuda"). If "cuda" fails, it will default to "cpu". This argument is passed to the ``pairk.ESM_Model.encode`` method
+
+Full length sequences (``full_length_sequence_dict``) are required to generate the embeddings because each embedding is dependent upon the neighboring residues. The embeddings for just an IDR are different than the embeddings for a full length sequences. Thus, the full length embeddings are gathered first, and then the IDR embeddings are sliced out for the k-mer alignment. 
+
+The ``idr_position_map`` is used to slice out the IDR embeddings, and there must be IDR positions for each sequence in the input sequence set.
+
+The ``mod`` input is required so that you can preload the ESM model before running the method. You preload the ESM model with ``pairk.ESM_Model()``
+
+.. autoclass:: pairk.ESM_Model
+   :members:
+   :undoc-members:
+   :no-index: 
+
+There is currently no way to use pre-generated embeddings for this method, but this functionality would be very easy to add.
+
+The ``pairk.pairk_alignment_embedding_distance`` method returns a ``PairkAln`` object, just like the previous methods
+
+example usage: loading the ESM2 model and running the method
+
+.. code-block:: python
+
+    mod = pairk.ESM_Model()
+    aln_results_embedding = pairk.pairk_alignment_embedding_distance(
+        full_length_sequence_dict=ex1.full_length_dict,
+        idr_position_map=ex1.idr_position_map,
+        query_id=ex1.query_id,
+        k=5,
+        mod=mod,
+        device="cpu"
+    )
+
 
 k-mer alignment results
-"""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 The results are returned as a ``PairkAln`` object.
 
@@ -204,98 +300,6 @@ example: save the results to a file using ``write_to_file`` and load them back i
     aln_results.write_to_file('./aln_results.json')
     aln_results = pairk.PairkAln.from_file('./aln_results.json')
     print(aln_results)
-
-
-pairk.pairk_alignment_needleman - faster
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: pairk.pairk_alignment_needleman
-    :no-index: 
-
-This method returns the same results as ``pairk.pairk_alignment``, but it is faster.
-
-The difference is that the ``pairk.pairk_alignment_needleman`` method uses the Needleman-Wunsch algorithm to align the k-mers, while the ``pairk.pairk_alignment`` method uses a scoring matrix to exhaustively score the k-mer matches. ``pairk.pairk_alignment_needleman`` ensures that the alignment is gapless by using an extremely high gap opening and extension penalty (-1000000). This will ensure that the alignment is gapless, unless you use a really unusual scoring matrix with very high scores.
-
-This method takes similar arguments as ``pairk.pairk_alignment``, accept that the ``pairk.pairk_alignment_needleman`` method takes an optional ``aligner`` argument. This allows you to create the aligner before calling the method, which is useful if you want to do multiprocessing, so that you're not creating a new aligner for each process. I've found that if you create a new aligner for each process, the memory usage gets very high, as if the memory isn't being released until the entire script finishes
-
-The ``aligner`` object can be created via the ``pairk.create_aligner`` function. This function takes the name of the scoring matrix as an argument and returns the aligner object. If you don't pass the ``aligner`` argument to the ``pairk.pairk_alignment_needleman`` method, it will create a new aligner using the ``matrix_name`` argument. This is fine if you're not doing multiprocessing. If you are doing multiprocessing, I would suggest creating the aligner before calling the method. If the ``aligner`` argument is passed, the ``matrix_name`` argument is ignored.
-
-
-.. code-block:: python
-
-    # Making the aligner ahead of time to demonstrate
-    aligner = pairk.make_aligner('EDSSMat50')
-
-.. code-block:: python
-
-    aln_results_needleman = pairk.pairk_alignment_needleman(
-        idr_dict=ex1.idr_dict,
-        query_id=ex1.query_id,
-        k=5,
-        aligner=aligner
-    )
-
-Results are the same as the previous method:
-
-.. code-block:: python
-
-    (aln_results.position_matrix == aln_results_needleman.position_matrix).all().all()
-
-
-Embedding distance alignment
-------------------------------
-
-This method uses the Euclidean distance between the query k-mer residue embeddings and homolog k-mer residue embeddings and selects the lowest distance match from each homolog. For each homolog, it calculates the distance between the query k-mer and each k-mer in the homolog. It then selects the k-mer with the lowest distance as the best match.
-
-
-pairk.pairk_alignment_embedding_distance
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: pairk.pairk_alignment_embedding_distance
-    :no-index: 
-
-
-This method generates residue embeddings using the ESM2 protein large language model. 
-
-Because residue embeddings are used, the inputs are slightly different than the previous methods. 
-
-The inputs are:
-
-* ``full_length_sequence_dict``: a dictionary of full-length sequences, where the keys are the sequence ids and the values are the sequences. This is used to generate the embeddings.
-* ``idr_position_map``: a dictionary where the keys are the full-length sequence ids and the values are the start and end positions of the IDR in the full-length sequence (using python indexing). This is used to slice out the IDR embeddings/sequences from the full-length embeddings/sequences.
-* ``query_id``: a query sequence id (the sequence to split into k-mers and align with the homologs). This id should be present in ``idr_position_map`` and ``full_length_sequence_dict``.
-* ``k`` - the length of the k-mers
-* ``mod`` - a ``pairk.ESM_Model`` object. This is the ESM2 model used to generate the embeddings. The code for the ESM2 embeddings is adapted from the kibby conservation tool [link](https://github.com/esbgkannan/kibby) DOI: 10.1093/bib/bbac599
-* ``device`` - whether to use cuda or your cpu for pytorch, should be either "cpu" or "cuda". (default is "cuda"). If "cuda" fails, it will default to "cpu". This argument is passed to the ``pairk.ESM_Model.encode`` method
-
-Full length sequences (``full_length_sequence_dict``) are required to generate the embeddings because each embedding is dependent upon the neighboring residues. The embeddings for just an IDR are different than the embeddings for a full length sequences. Thus, the full length embeddings are gathered first, and then the IDR embeddings are sliced out for the k-mer alignment. 
-
-The ``idr_position_map`` is used to slice out the IDR embeddings, and there must be IDR positions for each sequence in the input sequence set.
-
-The ``mod`` input is required so that you can preload the ESM model before running the method. You preload the ESM model with ``pairk.ESM_Model()``
-
-.. autoclass:: pairk.ESM_Model
-   :members:
-   :undoc-members:
-   :no-index: 
-
-There is currently no way to use pre-generated embeddings for this method, but this functionality would be very easy to add.
-
-The ``pairk.pairk_alignment_embedding_distance`` method returns a ``PairkAln`` object, just like the previous methods
-
-example usage: loading the ESM2 model and running the method
-
-.. code-block:: python
-
-    mod = pairk.ESM_Model()
-    aln_results_embedding = pairk.pairk_alignment_embedding_distance(
-        full_length_sequence_dict=ex1.full_length_dict,
-        idr_position_map=ex1.idr_position_map,
-        query_id=ex1.query_id,
-        k=5,
-        mod=mod,
-        device="cpu"
-    )
 
 
 Step 2: k-mer conservation
