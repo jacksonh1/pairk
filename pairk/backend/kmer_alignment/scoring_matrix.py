@@ -88,7 +88,7 @@ def pairk_alignment(
     """run pairwise k-mer alignment method using an exhaustive comparison of k-mers.
     Each query k-mer is scored against each ortholog k-mer to find the best matching
     ortholog k-mer in each ortholog. If a ortholog IDR is shorter than the k-mer, a
-    string of "-" characters ("-"*k) is assigned as the best matching ortholog k-mer for that
+    string of "-" characters ("-"\\*k) is assigned as the best matching ortholog k-mer for that
     ortholog.
 
     **Note**: if there are multiple top-scoring matches, only one is returned.

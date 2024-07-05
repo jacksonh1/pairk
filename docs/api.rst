@@ -15,6 +15,16 @@ main pairk functions
 .. :show-inheritance:
 
 
+utility functions
+-----------------
+
+.. automodule:: pairk.utilities
+   :members:
+
+
+   .. :show-inheritance:
+
+
 single k-mer functions
 ----------------------
 

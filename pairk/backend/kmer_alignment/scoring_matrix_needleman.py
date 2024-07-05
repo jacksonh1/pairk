@@ -61,7 +61,7 @@ def pairk_alignment_needleman(
     run pairwise k-mer alignment method using the needleman-wunsch algorithm as
     implemented in Biopython. Each query k-mer is scored against each ortholog
     k-mer to find the best matching ortholog k-mer in each ortholog. If a ortholog
-    IDR is shorter than the k-mer, a string of "-" characters  ("-"*k) is
+    IDR is shorter than the k-mer, a string of "-" characters  ("-"\\*k) is
     assigned as the best matching ortholog k-mer for that ortholog
 
     **Note**: if there are multiple top-scoring matches, only one is returned.

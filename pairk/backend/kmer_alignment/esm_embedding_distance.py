@@ -155,7 +155,7 @@ def pairk_alignment_embedding_distance(
     """run pairwise k-mer alignment method using sequence embeddings from the
     ESM2 protein large language model to find the best k-mer matches from each
     homolog. If a ortholog IDR is shorter than the k-mer, a string of "-"
-    characters ("-"*k) is assigned as the best matching ortholog k-mer for that
+    characters ("-"\\*k) is assigned as the best matching ortholog k-mer for that
     ortholog
 
     **Note**: if there are multiple top-scoring matches, only one is returned.

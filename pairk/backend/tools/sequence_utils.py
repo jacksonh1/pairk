@@ -10,6 +10,9 @@ import numpy as np
 import pandas as pd
 from Bio import Align, AlignIO, Seq, SeqIO
 from Bio.SeqRecord import SeqRecord
+from Bio.Align import MultipleSeqAlignment
+
+# from Bio.Align import MultipleSeqAlignment
 
 
 def percent_identity(seq1: SeqRecord, seq2: SeqRecord) -> float:
@@ -460,7 +463,8 @@ def reindex_alignment_str(seq_str):
 
 
 def find_alnslice_positions_in_unaln(aln: str, aln_start: int, aln_end: int):
-    """find the non-gap positions of a slice of an aligned sequence in the unaligned sequence
+    """Go from a slice of an aligned sequence, to the positions in the unaligned
+    sequence that correspond to the slice.
 
     Parameters
     ----------
@@ -484,6 +488,40 @@ def find_alnslice_positions_in_unaln(aln: str, aln_start: int, aln_end: int):
                 positions.append(unaln_index)
             unaln_index += 1
     return positions
+
+
+def aln_2_idr_position_map(
+    aln: MultipleSeqAlignment, idr_aln_start: int, idr_aln_end: int
+) -> dict[str, list[int]]:
+    """from an input multiple sequence alignment, generate a dictionary of the
+    start and end positions of the IDRs in the unaligned sequences. The IDRs
+    are defined by single start/end positions in the alignment. In other words,
+    the IDRs are defined by a single slice of the alignment.
+
+    Parameters
+    ----------
+    aln : MultipleSeqAlignment
+        BioPython MultipleSeqAlignment object
+    idr_aln_start : int
+        start position of the IDRs in the alignment
+    idr_aln_end : int
+        end position of the IDRs in the alignment
+
+    Returns
+    -------
+    dict[str, list[int]]
+        idr_position_map: dictionary of the start and end positions of the IDRs
+        in the unaligned sequences. The keys are the sequence ids and the values
+        are lists of the start and end positions of the IDRs in the unaligned
+        sequences. The start and end positions are 0-indexed.
+    """
+    idr_position_map = {}
+    for seqrecord in list(aln):
+        p = find_alnslice_positions_in_unaln(
+            str(seqrecord.seq), idr_aln_start, idr_aln_end
+        )
+        idr_position_map[seqrecord.id] = [p[0], p[-1]]
+    return idr_position_map
 
 
 # t = '--LPPPP---PP------TEST--'
