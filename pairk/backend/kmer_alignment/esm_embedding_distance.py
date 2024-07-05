@@ -145,7 +145,7 @@ def get_idr_embedding_dict(
 
 
 def pairk_alignment_embedding_distance(
-    full_length_dict_in: dict[str, str],
+    full_length_sequence_dict: dict[str, str],
     idr_position_map: dict[str, list[int]],
     query_id: str,
     k: int,
@@ -169,16 +169,16 @@ def pairk_alignment_embedding_distance(
 
     Parameters
     ----------
-    full_length_dict_in : dict[str, str]
+    full_length_sequence_dict : dict[str, str]
         input sequences in dictionary format with the key being the sequence id and
         the value being the sequence as a string
     idr_position_map : dict[str, list[int]]
-        a dictionary where the keys are the sequence ids in `full_length_dict_in`
+        a dictionary where the keys are the sequence ids in `full_length_sequence_dict`
         and the values are the start and end positions of the IDR in the sequence
         (using python indexing). This is used to slice out the IDR
         embeddings/sequences from the full-length embeddings/sequences.
     query_id : str
-        the id of the query sequence within the `full_length_dict_in` dictionary
+        the id of the query sequence within the `full_length_sequence_dict` dictionary
         and the `idr_position_map` dictionary. The query id must be present in
         both dictionaries.
     k : int
@@ -196,12 +196,12 @@ def pairk_alignment_embedding_distance(
         an object containing the alignment results. See the `pairk.PairkAln`
         class for more information.
     """
-    _exceptions.check_queryid_in_idr_dict(full_length_dict_in, query_id)
+    _exceptions.check_queryid_in_idr_dict(full_length_sequence_dict, query_id)
     _exceptions.check_queryid_in_idr_dict(idr_position_map, query_id)
-    assert set(full_length_dict_in.keys()) == set(
+    assert set(full_length_sequence_dict.keys()) == set(
         idr_position_map.keys()
     ), "Keys in full_length_dict and idr_position_map must be the same"
-    full_length_dict = copy.deepcopy(full_length_dict_in)
+    full_length_dict = copy.deepcopy(full_length_sequence_dict)
     embedding_dict = get_idr_embedding_dict(
         full_length_dict, idr_position_map, mod, device
     )

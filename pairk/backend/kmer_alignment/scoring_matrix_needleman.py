@@ -51,7 +51,7 @@ def run_pairwise_kmer_alignment_needleman(
 
 
 def pairk_alignment_needleman(
-    idr_dict_in: dict[str, str],
+    idr_dict: dict[str, str],
     query_id: str,
     k: int,
     aligner: Align.PairwiseAligner | None = None,
@@ -68,11 +68,11 @@ def pairk_alignment_needleman(
 
     Parameters
     ----------
-    idr_dict_in : dict[str, str]
+    idr_dict : dict[str, str]
         input sequences in dictionary format with the key being the sequence id and
         the value being the sequence as a string
     query_id : str
-        the id of the query sequence within the `idr_dict_in` dictionary
+        the id of the query sequence within the `idr_dict` dictionary
     k : int
         the length of the k-mers to use for the alignment
     aligner : Align.PairwiseAligner | None, optional
@@ -92,15 +92,15 @@ def pairk_alignment_needleman(
     pairwise_tools.PairkAln
         an object containing the alignment results. See the `pairk.PairkAln` class for more information.
     """
-    _exceptions.check_queryid_in_idr_dict(idr_dict_in, query_id)
-    idr_dict = copy.deepcopy(idr_dict_in)
+    _exceptions.check_queryid_in_idr_dict(idr_dict, query_id)
+    idr_str_dict = copy.deepcopy(idr_dict)
     if aligner is None:
         _exceptions.validate_matrix_name(matrix_name)
         aligner = needleman_tools.make_aligner(matrix_name)
-    query_idr = idr_dict.pop(query_id)
+    query_idr = idr_str_dict.pop(query_id)
     score_df, orthokmer_df, pos_df = run_pairwise_kmer_alignment_needleman(
         query_idr,
-        idr_dict,
+        idr_str_dict,
         k,
         aligner=aligner,
     )

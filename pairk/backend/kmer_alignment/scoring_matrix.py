@@ -80,7 +80,7 @@ def run_pairwise_kmer_alignment(
 
 
 def pairk_alignment(
-    idr_dict_in: dict[str, str],
+    idr_dict: dict[str, str],
     query_id: str,
     k: int,
     matrix_name: str = "EDSSMat50",
@@ -95,11 +95,11 @@ def pairk_alignment(
 
     Parameters
     ----------
-    idr_dict_in : dict[str, str]
+    idr_dict : dict[str, str]
         input sequences in dictionary format with the key being the sequence id and
         the value being the sequence as a string
     query_id : str
-        the id of the query sequence within the `idr_dict_in` dictionary
+        the id of the query sequence within the `idr_dict` dictionary
     k : int
         the length of the k-mers to use for the alignment
     matrix_name : str, optional
@@ -113,14 +113,14 @@ def pairk_alignment(
         an object containing the alignment results. See the `pairk.PairkAln` class for more information.
     """
     _exceptions.validate_matrix_name(matrix_name)
-    _exceptions.check_queryid_in_idr_dict(idr_dict_in, query_id)
+    _exceptions.check_queryid_in_idr_dict(idr_dict, query_id)
     scoremat_df = matrices.load_matrix_as_df(matrix_name)
     scoremat_dict = matrices.matrix_df_to_dict(scoremat_df)
-    idr_dict = copy.deepcopy(idr_dict_in)
-    _exceptions.check_sequence_characters_dict(idr_dict, matrix_name)
-    query_idr = idr_dict.pop(query_id)
+    idr_str_dict = copy.deepcopy(idr_dict)
+    _exceptions.check_sequence_characters_dict(idr_str_dict, matrix_name)
+    query_idr = idr_str_dict.pop(query_id)
     score_df, orthokmer_df, pos_df = run_pairwise_kmer_alignment(
-        query_idr, idr_dict, k, score_matrix_dict=scoremat_dict
+        query_idr, idr_str_dict, k, score_matrix_dict=scoremat_dict
     )
     return pairwise_tools.PairkAln(
         orthokmer_df=orthokmer_df,

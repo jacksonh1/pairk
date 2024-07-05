@@ -42,6 +42,7 @@ from pairk.backend.tools.sequence_utils import (
     strip_dashes_from_sequences,
 )
 from pairk.examples import example1
+import pairk.utilities as utilities
 
 
 # Define the __all__ variable

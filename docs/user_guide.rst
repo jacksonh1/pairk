@@ -104,8 +104,8 @@ There are 2 implementations of the scoring matrix method:
 
 inputs common to both functions are:
 
-* ``idr_dict_in``: a dictionary of IDR sequences, where the keys are the sequence ids and the values are the sequences. Includes the query sequence (the sequence to split into k-mers and align with the homologs).
-* ``query_id``: a query sequence id (the sequence to split into k-mers and align with the homologs). This id should be present in ``idr_dict_in``.
+* ``idr_dict``: a dictionary of IDR sequences, where the keys are the sequence ids and the values are the sequences. Includes the query sequence (the sequence to split into k-mers and align with the homologs).
+* ``query_id``: a query sequence id (the sequence to split into k-mers and align with the homologs). This id should be present in ``idr_dict``.
 * ``k``: the length of the k-mers
 
 These inputs can be generated many ways, and there are helper functions in the pairk library to help with this (coming soon). 
@@ -122,7 +122,7 @@ example usage:
 .. code-block:: python
 
     aln_results = pairk.pairk_alignment(
-        idr_dict_in=ex1.idr_dict,
+        idr_dict=ex1.idr_dict,
         query_id=ex1.query_id,
         k=5,
         matrix_name="EDSSMat50"
@@ -229,7 +229,7 @@ The ``aligner`` object can be created via the ``pairk.create_aligner`` function.
 .. code-block:: python
 
     aln_results_needleman = pairk.pairk_alignment_needleman(
-        idr_dict_in=ex1.idr_dict,
+        idr_dict=ex1.idr_dict,
         query_id=ex1.query_id,
         k=5,
         aligner=aligner
@@ -261,14 +261,14 @@ Because residue embeddings are used, the inputs are slightly different than the 
 
 The inputs are:
 
-* ``full_length_dict_in``: a dictionary of full-length sequences, where the keys are the sequence ids and the values are the sequences. This is used to generate the embeddings.
+* ``full_length_sequence_dict``: a dictionary of full-length sequences, where the keys are the sequence ids and the values are the sequences. This is used to generate the embeddings.
 * ``idr_position_map``: a dictionary where the keys are the full-length sequence ids and the values are the start and end positions of the IDR in the full-length sequence (using python indexing). This is used to slice out the IDR embeddings/sequences from the full-length embeddings/sequences.
-* ``query_id``: a query sequence id (the sequence to split into k-mers and align with the homologs). This id should be present in ``idr_position_map`` and ``full_length_dict_in``.
+* ``query_id``: a query sequence id (the sequence to split into k-mers and align with the homologs). This id should be present in ``idr_position_map`` and ``full_length_sequence_dict``.
 * ``k`` - the length of the k-mers
 * ``mod`` - a ``pairk.ESM_Model`` object. This is the ESM2 model used to generate the embeddings. The code for the ESM2 embeddings is adapted from the kibby conservation tool [link](https://github.com/esbgkannan/kibby) DOI: 10.1093/bib/bbac599
 * ``device`` - whether to use cuda or your cpu for pytorch, should be either "cpu" or "cuda". (default is "cuda"). If "cuda" fails, it will default to "cpu". This argument is passed to the ``pairk.ESM_Model.encode`` method
 
-Full length sequences (``full_length_dict_in``) are required to generate the embeddings because each embedding is dependent upon the neighboring residues. The embeddings for just an IDR are different than the embeddings for a full length sequences. Thus, the full length embeddings are gathered first, and then the IDR embeddings are sliced out for the k-mer alignment. 
+Full length sequences (``full_length_sequence_dict``) are required to generate the embeddings because each embedding is dependent upon the neighboring residues. The embeddings for just an IDR are different than the embeddings for a full length sequences. Thus, the full length embeddings are gathered first, and then the IDR embeddings are sliced out for the k-mer alignment. 
 
 The ``idr_position_map`` is used to slice out the IDR embeddings, and there must be IDR positions for each sequence in the input sequence set.
 
@@ -289,7 +289,7 @@ example usage: loading the ESM2 model and running the method
 
     mod = pairk.ESM_Model()
     aln_results_embedding = pairk.pairk_alignment_embedding_distance(
-        full_length_dict_in=ex1.full_length_dict,
+        full_length_sequence_dict=ex1.full_length_dict,
         idr_position_map=ex1.idr_position_map,
         query_id=ex1.query_id,
         k=5,
@@ -325,7 +325,7 @@ example usage:
 .. code-block:: python
 
     aln_results = pairk.pairk_alignment(
-        idr_dict_in=ex1.idr_dict,
+        idr_dict=ex1.idr_dict,
         query_id=ex1.query_id,
         k=5,
         matrix_name="EDSSMat50"
@@ -345,7 +345,7 @@ example usage: using a different conservation scoring function:
 .. code-block:: python
 
     aln_results = pairk.pairk_alignment(
-        idr_dict_in=ex1.idr_dict,
+        idr_dict=ex1.idr_dict,
         query_id=ex1.query_id,
         k=5,
     )

@@ -90,7 +90,7 @@ Here's a quick example to get you started:
     ex1 = pairk.example1
 
     # Perform k-mer alignment
-    aln_results = pairk.pairk_alignment(idr_dict_in=ex1.idr_dict, query_id=ex1.query_id, k=5, matrix_name="EDSSMat50")
+    aln_results = pairk.pairk_alignment(idr_dict=ex1.idr_dict, query_id=ex1.query_id, k=5, matrix_name="EDSSMat50")
 
     # Calculate conservation
     conservation_results = pairk.calculate_conservation(aln_results)
