@@ -1,7 +1,7 @@
 import pairk.backend.tools.pssms as pssms
 import matplotlib.pyplot as plt
 
-plt.style.use("pairk.backend.pairk_plotstyle")
+plt.style.use("pairk.data.pairk_plotstyle")
 import matplotlib.pyplot as plt
 import matplotlib.axes
 import seaborn as sns

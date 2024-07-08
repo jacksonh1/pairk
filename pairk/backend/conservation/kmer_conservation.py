@@ -13,7 +13,7 @@ import matplotlib.axes
 import matplotlib.figure
 import pairk.backend.tools.plotting_tools as plotting_tools
 
-plt.style.use("pairk.backend.pairk_plotstyle")
+plt.style.use("pairk.data.pairk_plotstyle")
 
 
 # %%
