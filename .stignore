@@ -1,9 +1,0 @@
-**.DS_Store
-**.pyc
-**.egg-info
-**.egg
-**.db
-**.sqlite3
-**__pycache__/
-**.env
-**.git/
