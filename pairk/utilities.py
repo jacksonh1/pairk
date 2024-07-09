@@ -28,7 +28,7 @@ def fasta_MSA_to_idr_dict(
     idr_dict = {
         i.id: str(i.seq) for i in _tools.strip_dashes_from_sequences(idr_aln_list)  # type: ignore
     }
-    return idr_dict
+    return idr_dict  # type: ignore
 
 
 def fasta_MSA_to_idr_map(
@@ -57,8 +57,28 @@ def fasta_MSA_to_idr_map(
     """
     faimporter = _tools.FastaImporter(alignment_file)
     aln = faimporter.import_as_alignment()
-    idr_map = aln_2_idr_position_map(aln, idr_aln_start, idr_aln_end)
+    idr_map = aln_2_idr_position_map(aln, idr_aln_start, idr_aln_end + 1)
     return idr_map
+
+
+def fasta_MSA_to_unaligned_sequences(alignment_file: str | Path) -> dict[str, str]:
+    """import a multiple sequence alignment (MSA) from a fasta file and return the
+    unaligned sequences as a dictionary.
+
+    Parameters
+    ----------
+    alignment_file : str | Path
+        a path to a fasta file containing a multiple sequence alignment
+
+    Returns
+    -------
+    dict[str, str]
+        a dictionary with sequence IDs as keys and the unaligned sequence as values
+    """
+    faimporter = _tools.FastaImporter(alignment_file)
+    aln_dict = faimporter.import_as_str_dict()
+    unaligned_dict = {k: _tools.strip_dashes_from_str(v) for k, v in aln_dict.items()}
+    return unaligned_dict
 
 
 # generate IDR map and IDR dict from
