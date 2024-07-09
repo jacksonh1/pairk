@@ -58,7 +58,7 @@ in informal pseudocode, the algorithm looks like this:
 
     for each k-mer at each position in the query IDR:
        for each homologous IDR:
-           for each k-mer in the homologous IDR:
+           for each k-mer at each position in the homologous IDR:
                score the alignment of the homolog k-mer - query k-mer match (with no gaps)
            store the score, position, and sequence of the best scoring homologous k-mer
 
@@ -74,7 +74,7 @@ For each k-mer in the query IDR, step 2 constructs a pseudo-MSA composed of the 
         from the step 1 results, construct a psuedo-MSA composed of the query k-mer and the best scoring k-mers from each homologous IDR
         for each position in the pseudo-MSA:
             score the conservation of the position using a column-wise scoring function
-    Convert all scores for all k-mers pseudo-MSAs to a z-score
+    Convert all scores for all k-mer pseudo-MSAs to z-scores
 
 
 quickstart
