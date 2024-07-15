@@ -13,7 +13,6 @@ dependencies:
   - seaborn
   - matplotlib
   - pip:
-    - -e ../
     - alfpy
     - logomaker
     - torch

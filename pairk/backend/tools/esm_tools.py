@@ -61,7 +61,7 @@ class ESM_Model:
             torch.cuda.empty_cache()
 
             batch_labels, batch_strs, batch_tokens = self.batch_converter(
-                [["", sequence]]
+                [("", sequence)]
             )
             batch_tokens = batch_tokens.to(device)
             self.model = self.model.to(device)
@@ -71,9 +71,47 @@ class ESM_Model:
                 )
                 results = results["representations"][self.layers].to("cpu")[0]
             return results
-        except:
+        except Exception as e:
             if device != "cpu":
                 print(f"failed with {device}, trying cpu...")
                 return self.encode(sequence, device="cpu")
             else:
-                return
+                raise e
+
+    # def encode_multiple_seqs(self, sequences: list[str], device="cuda"):
+    #     """encode a protein sequence using the loaded model.
+
+    #     Parameters
+    #     ----------
+    #     sequences : list[str]
+    #         list of the amino acid sequences to encode.
+    #     device : str, optional
+    #         whether to use a GPU via "cuda", or "cpu", by default "cuda"
+
+    #     Returns
+    #     -------
+    #     torch.Tensor
+    #         sequence embedding tensor
+    #     """
+
+    #     try:
+    #         torch.cuda.empty_cache()
+
+    #         batch_labels, batch_strs, batch_tokens = self.batch_converter(
+    #             [(f"seq_{i}", seq) for i, seq in enumerate(sequences)]
+    #         )
+    #         batch_tokens = batch_tokens.to(device)
+    #         self.model = self.model.to(device)
+    #         with torch.no_grad():
+    #             results = self.model(
+    #                 batch_tokens, repr_layers=[self.layers], return_contacts=False
+    #             )
+    #             results = results["representations"][self.layers].to("cpu")
+
+    #         return results
+    #     except Exception as e:
+    #         if device != "cpu":
+    #             print(f"failed with {device}, trying cpu...")
+    #             return self.encode_multiple_seqs(sequences, device="cpu")
+    #         else:
+    #             raise e

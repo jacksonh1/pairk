@@ -124,6 +124,30 @@ def get_idr_embeddings(
     return idr_str, idr_ortho_tensor
 
 
+# def get_idr_embedding_dict(
+#     full_length_sequence_dict: dict[str, str],
+#     idr_position_map: dict[str, list[int]],
+#     mod: esm_tools.ESM_Model,
+#     device="cuda",
+# ):
+#     embedding_dict = defaultdict(list)
+#     # get dictionary keys and values as 2 separate lists
+#     # fl_seqs = [(i, seq) for i, seq in full_length_sequence_dict.items()]
+#     seq_ids, seqs = zip(*full_length_sequence_dict.items())
+#     seq_embeddings = mod.encode_multiple_seqs(seqs, device=device)
+#     for i, seq, seq_embedding in zip(seq_ids, seqs, seq_embeddings):
+#         idrst, idrend = idr_position_map[i][0], idr_position_map[i][1]
+#         idr_str = seq[idrst : idrend + 1]
+#         if len(idr_str) == 0:
+#             embedding_dict[i].append("no idr")
+#             embedding_dict[i].append("no idr")
+#             continue
+#         idr_ortho_tensor = seq_embedding[idrst + 1 : idrend + 2, :]  # type: ignore # +1 to account for the start token
+#         embedding_dict[i].append(idr_str)
+#         embedding_dict[i].append(idr_ortho_tensor)
+#     return embedding_dict
+
+
 def get_idr_embedding_dict(
     full_length_sequence_dict: dict[str, str],
     idr_position_map: dict[str, list[int]],

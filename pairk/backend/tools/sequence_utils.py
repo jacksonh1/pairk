@@ -520,6 +520,9 @@ def aln_2_idr_position_map(
         p = find_alnslice_positions_in_unaln(
             str(seqrecord.seq), idr_aln_start, idr_aln_end
         )
+        if len(p) == 0:
+            idr_position_map[seqrecord.id] = [-1, -1]
+            continue
         idr_position_map[seqrecord.id] = [p[0], p[-1]]
     return idr_position_map
 

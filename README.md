@@ -77,7 +77,7 @@ necessary dependencies like so:
 ```bash
 git clone https://github.com/jacksonh1/pairk.git
 cd pairk
-conda env create -f=environment.yml
+conda env create -f=environment.yaml
 ```
 Then activate the environment with:
 ```bash
