@@ -1,14 +1,11 @@
-from Bio import Align, Seq
 import copy
 import pairk.backend.tools.sequence_utils as tools
 import pairk.backend.tools.pairwise_tools as pairwise_tools
-import pairk.backend.tools.matrices as matrices
-import pairk.backend.kmer_alignment.needleman_tools as needleman_tools
 import pairk.backend.exceptions as _exceptions
-import pandas as pd
 import pairk.backend.tools.esm_tools as esm_tools
 import torch
 from collections import defaultdict
+import torch
 
 
 def get_subsequences(indices, input_string, k):
@@ -168,6 +165,26 @@ def get_idr_embedding_dict(
     return embedding_dict
 
 
+def slice_idr_embedding_dict(
+    full_length_sequence_dict: dict[str, str],
+    idr_position_map: dict[str, list[int]],
+    precomputed_embeddings: dict[str, torch.Tensor],
+):
+    embedding_dict = defaultdict(list)
+    for i, seq in full_length_sequence_dict.items():
+        idr_start = idr_position_map[i][0]
+        idr_end = idr_position_map[i][1]
+        idr_str = seq[idr_start : idr_end + 1]
+        if len(idr_str) == 0:
+            embedding_dict[i].append("no idr")
+            embedding_dict[i].append("no idr")
+            continue
+        idr_ortho_tensor = precomputed_embeddings[i][idr_start + 1 : idr_end + 2, :]  # type: ignore # +1 to account for the start token
+        embedding_dict[i].append(idr_str)
+        embedding_dict[i].append(idr_ortho_tensor)
+    return embedding_dict
+
+
 def pairk_alignment_embedding_distance(
     full_length_sequence_dict: dict[str, str],
     idr_position_map: dict[str, list[int]],
@@ -175,6 +192,7 @@ def pairk_alignment_embedding_distance(
     k: int,
     mod: esm_tools.ESM_Model,
     device: str = "cuda",
+    precomputed_embeddings: None | dict[str, torch.Tensor] = None,
 ):
     """run pairwise k-mer alignment method using sequence embeddings from the
     ESM2 protein large language model to find the best k-mer matches from each
@@ -213,6 +231,11 @@ def pairk_alignment_embedding_distance(
         whether to use cuda or cpu for pytorch, must be either "cpu" or "cuda",
         by default "cuda". If "cuda" fails, it will default to "cpu". This
         argument is passed to the `esm_tools.ESM_Model.encode` method.
+    precomputed_embeddings : None | dict[str, torch.Tensor], optional
+        a dictionary where the keys are the sequence ids in `full_length_sequence_dict`
+        and the values are the precomputed embeddings for each sequence. If this
+        is provided, the function will use these embeddings instead of computing
+        them.
 
     Returns
     -------
@@ -226,9 +249,20 @@ def pairk_alignment_embedding_distance(
         idr_position_map.keys()
     ), "Keys in full_length_dict and idr_position_map must be the same"
     full_length_dict = copy.deepcopy(full_length_sequence_dict)
-    embedding_dict = get_idr_embedding_dict(
-        full_length_dict, idr_position_map, mod, device
-    )
+    if precomputed_embeddings is None:
+        embedding_dict = get_idr_embedding_dict(
+            full_length_dict, idr_position_map, mod, device
+        )
+    else:
+        _exceptions.check_queryid_in_idr_dict(precomputed_embeddings, query_id)
+        assert set(full_length_sequence_dict.keys()) == set(
+            precomputed_embeddings.keys()
+        ), "Keys in full_length_dict and precomputed_embeddings must be the same"
+        embedding_dict = slice_idr_embedding_dict(
+            full_length_sequence_dict=full_length_dict,
+            idr_position_map=idr_position_map,
+            precomputed_embeddings=precomputed_embeddings,
+        )
     score_df, orthokmer_df, pos_df = run_pairwise_kmer_emb_aln(
         query_id,
         embedding_dict,

@@ -104,8 +104,7 @@ def pairk_alignment(
         the length of the k-mers to use for the alignment
     matrix_name : str, optional
         The name of the scoring matrix to use in the algorithm, by default "EDSSMat50".
-        The available matrices can be viewed with the function `print_available_matrices()`
-        in `pairk.backend.tools.matrices`.
+        The available matrices can be viewed with the function `pairk.print_available_matrices()`.
 
     Returns
     -------

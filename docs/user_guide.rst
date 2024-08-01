@@ -215,7 +215,7 @@ The ``mod`` input is required so that you can preload the ESM model before runni
    :undoc-members:
    :no-index: 
 
-There is currently no way to use pre-generated embeddings for this method, but this functionality would be very easy to add.
+you can use pre-generated embeddings by providing them in a dictionary format to the ``precomputed_embeddings`` argument. The keys should be the sequence ids and the values should be full length sequence embedding tensors. For each sequence, the tensor.shape[0] should be equal to l+2, where l is the length of the full length sequence. The +2 is for the start and end tokens. If you provide precomputed embeddings, the ``mod`` and ``device`` arguments are ignored.
 
 The ``pairk.pairk_alignment_embedding_distance`` method returns a ``PairkAln`` object, just like the previous methods
 
