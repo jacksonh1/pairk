@@ -59,5 +59,6 @@ __all__ = [
     "pairk_alignment",
     "print_available_matrices",
     "FastaImporter",
+    "utilities",
     "__version__",
 ]
