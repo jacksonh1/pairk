@@ -87,7 +87,7 @@ def pairk_alignment(
 ) -> pairwise_tools.PairkAln:
     """run pairwise k-mer alignment method using an exhaustive comparison of k-mers.
     Each query k-mer is scored against each ortholog k-mer to find the best matching
-    ortholog k-mer in each ortholog. If a ortholog IDR is shorter than the k-mer, a
+    ortholog k-mer in each ortholog. If an ortholog IDR is shorter than the k-mer, a
     string of "-" characters ("-"\\*k) is assigned as the best matching ortholog k-mer for that
     ortholog.
 
@@ -134,23 +134,32 @@ def pairk_alignment_single_kmer(
     matrix_name: str = "EDSSMat50",
 ):
     """
-    Align a single kmer to a dictionary of sequences and return the best scoring subsequence for each sequence in the dictionary.
+    Align a single kmer to a dictionary of sequences in a pairwise manner (i.e.
+    align the kmer to each sequence one-by-one (with no gaps). Returns the score,
+    subsequence, and position of the best subsequence-kmer match for each
+    sequence in the input dictionary. If an ortholog IDR is shorter than the k-mer, a
+    string of "-" characters ("-"\\*k) is assigned as the best matching ortholog k-mer for that
+    ortholog.
+
+    **Note**: if there are multiple top-scoring matches, only one is returned.
 
     Parameters
     ----------
     kmer : str
         the kmer to align
     ortholog_idrs : dict[str, str]
-        a dictionary of sequences to align the kmer to, with the key being the sequence id and the value being the sequence as a string
+        a dictionary of sequences to align the kmer to, with the key being the
+        sequence id and the value being the sequence as a string
     matrix_name : str, optional
         The name of the scoring matrix to use in the algorithm, by default "EDSSMat50".
-        The available matrices can be viewed with the function `print_available_matrices()`
-        in `pairk.backend.tools.matrices`.
+        The available matrices can be viewed with the function `pairk.print_available_matrices()`.
 
     Returns
     -------
     dict[str, float], dict[str, str], dict[str, int]
-        the best scores, best subsequences, and best positions for the kmer in each sequence in the input `ortholog_idrs` dictionary
+        3 dictionaries containing the scores, subsequences, and positions of
+        the best subsequence-kmer matches for each sequence in the input
+        `ortholog_idrs` dictionary. Dictionary keys are the sequence ids.
     """
     _exceptions.validate_matrix_name(matrix_name)
     # I don't like how innefficient this is, but I find the normal error for
