@@ -177,7 +177,7 @@ def weighted_freq_count_pseudocount(col, seq_weights=None, pc_amount=0.0000001):
 def property_entropy(col, seq_weights=None, gap_penalty=1):
     """Calculate the entropy of a column col relative to a partition of the
     amino acids.
-    ---- New custom docstring ----
+
     Williamson '95 partitioning is used. If gap_penalty == 1, then gaps are
     penalized. The entropy will be between inverted so that it spans 0 to 1,
     with 1 being the most conserved.
@@ -230,11 +230,10 @@ def property_entropy(col, seq_weights=None, gap_penalty=1):
 
 
 def shannon_entropy(col, seq_weights=None, gap_penalty=1):
-    """Calculates the Shannon entropy of the column col. sim_matrix  and
-    bg_distr are ignored. If gap_penalty == 1, then gaps are penalized. The
+    """Calculates the Shannon entropy of the column col. The
     entropy will be between zero and one because of its base. See p.13 of
-    Valdar 02 for details. The information score 1 - h is returned for the sake
-    of consistency with other scores."""
+    Valdar 02 for details. The entropy will be between inverted so that it spans 0 to 1,
+    with 1 being the most conserved."""
 
     if seq_weights is None:
         seq_weights = [1.0] * len(col)
