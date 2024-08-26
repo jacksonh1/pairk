@@ -57,21 +57,21 @@ in informal pseudocode, the algorithm looks like this:
 .. code-block:: none
 
     for each k-mer at each position in the query IDR:
-       for each homologous IDR:
-           for each k-mer at each position in the homologous IDR:
-               score the alignment of the homolog k-mer - query k-mer match (with no gaps)
-           store the score, position, and sequence of the best scoring homologous k-mer
+        for each homologous IDR:
+            for each k-mer at each position in the homologous IDR:
+                score the alignment of the homolog k-mer - query k-mer match (with no gaps)
+            store the score, position, and sequence of the best scoring homologous k-mer
+        construct a "pseudo-MSA" composed of the query k-mer and the best scoring k-mers from each homologous IDR
 
 
 2: k-mer conservation
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-For each k-mer in the query IDR, step 2 constructs a pseudo-MSA composed of the query k-mer and the best scoring k-mers from each homologous IDR. The conservation of each position in the pseudo-MSA is scored using a column-wise scoring function. The scores are then converted to z-scores to give the conservation relative to other residues in the query IDR.
+For each k-mer "pseudo-MSA" from step 1, step 2 calculates the conservation of each position in the pseudo-MSA using a column-wise scoring function. The scores are then converted to z-scores to give the conservation relative to other residues in the query IDR. The z-score background distribution is all of the column-wise scores from all of the pseudo-MSAs.
 
 .. code-block:: none
 
     for each k-mer in the query IDR:
-        from the step 1 results, construct a psuedo-MSA composed of the query k-mer and the best scoring k-mers from each homologous IDR
         for each position in the pseudo-MSA:
             score the conservation of the position using a column-wise scoring function
     Convert all scores for all k-mer pseudo-MSAs to z-scores

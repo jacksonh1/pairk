@@ -7,7 +7,7 @@ from importlib_resources import files
 
 # MATRIX_DIR = Path(str(files('pairk.matrices')))
 # AVAILABLE_MATRIX_FILES = {i.stem: i for i in MATRIX_DIR.glob("*") if not i.name.endswith(".py") and not i.name.startswith("__")}
-AVAILABLE_MATRIX_FILES = {i.stem: i for i in files("pairk.data.matrices").iterdir()}  # type: ignore
+AVAILABLE_MATRIX_FILES = {i.stem: i for i in files("pairk.data.matrices").iterdir() if i.stem != "__init__"}  # type: ignore
 
 BIOPYTHON_MATRICES = Align.substitution_matrices.load()  # type: ignore
 AA_ORDER = [
