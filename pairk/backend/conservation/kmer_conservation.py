@@ -230,18 +230,18 @@ class PairkConservation:
             matplotlib axes with the background conservation score histogram
         """
         ax = self._create_axes_if_none(ax)
-        ax.hist(self.bg_scores, bins=bins)
+        ax.hist(self.bg_scores, bins=bins, edgecolor="none")
         # ax.set_title("Background")
         ax.set_xlabel("Conservation score")
         ax.set_ylabel("Count")
-        ax.axvline(self.bg_mean, color="red", linestyle="--", label="Mean", linewidth=2)
+        ax.axvline(self.bg_mean, color="red", linestyle=":", label="Mean", linewidth=3)
         ax.axvline(
-            self.bg_mean + self.bg_std, color="black", label="Mean + 1 std", linewidth=2
+            self.bg_mean + self.bg_std, color="black", label="1 std", linewidth=2
         )
         ax.axvline(
-            self.bg_mean - self.bg_std, color="black", label="Mean - 1 std", linewidth=2
+            self.bg_mean - self.bg_std, color="black", label="-1 std", linewidth=2
         )
-        # ax.legend()
+        ax.legend(["Mean", "+/- 1 std"], prop={"size": 12})
         ax.set_xlim(0, 1)
         return ax
 

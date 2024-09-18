@@ -182,6 +182,9 @@ def slice_idr_embedding_dict(
         idr_ortho_tensor = precomputed_embeddings[i][idr_start + 1 : idr_end + 2, :]  # type: ignore # +1 to account for the start token
         embedding_dict[i].append(idr_str)
         embedding_dict[i].append(idr_ortho_tensor)
+        assert idr_ortho_tensor.shape[0] == len(
+            idr_str
+        ), f"IDR tensor and string length mismatch for {i}"
     return embedding_dict
 
 
@@ -194,19 +197,29 @@ def pairk_alignment_embedding_distance(
     device: str = "cuda",
     precomputed_embeddings: None | dict[str, torch.Tensor] = None,
 ):
-    """run pairwise k-mer alignment method using sequence embeddings from the
-    ESM2 protein large language model to find the best k-mer matches from each
-    homolog. If a ortholog IDR is shorter than the k-mer, a string of "-"
-    characters ("-"\\*k) is assigned as the best matching ortholog k-mer for that
-    ortholog
+    """run pairwise k-mer alignment method using residue embeddings from a large
+    language model to find the best k-mer matches from each homolog. By default,
+    the ESM2 protein large language model is used to generate residue embeddings.
+    Other residue embeddings (e.g. from different LLMs) can be used by providing
+    the embeddings directly to the `precomputed_embeddings` argument.
+    If an ortholog IDR is shorter than the k-mer, a string of "-" characters
+    ("-"\\*k) is assigned as the best matching ortholog k-mer for that ortholog
 
     **Note**: if there are multiple top-scoring matches, only one is returned.
 
+    If `precomputed_embeddings` is not provided,
     Sequence embeddings are calculated for each full length sequence in the
     input dictionary. The `idr_position_map` dictionary is used to extract the
-    IDR and the IDR embeddings from each sequence. The Euclidean distance is
-    calculated between each query k-mer embedding slice and each ortholog k-mer
-    embedding slice to find the best matching ortholog k-mer from each ortholog.
+    IDR and the IDR embeddings from each sequence.
+
+    If `precomputed_embeddings` is provided, the function will use these embeddings.
+    the provided embeddings must have an extra dimension for the start and end
+    tokens. The start token is at index 0 and the end token is at index -1. These
+    are stripped out before calculating the pairwise distances.
+
+    The Euclidean distance is calculated between each query k-mer embedding
+    slice and each ortholog k-mer embedding slice to find the best matching
+    ortholog k-mer from each ortholog.
 
 
     Parameters
@@ -235,7 +248,11 @@ def pairk_alignment_embedding_distance(
         a dictionary where the keys are the sequence ids in `full_length_sequence_dict`
         and the values are the precomputed embeddings for each sequence. If this
         is provided, the function will use these embeddings instead of computing
-        them.
+        them. Allows you to pass any precomputed embeddings (from any LLM) for
+        the sequences. The provided embeddings must have an extra dimension for
+        the start and end tokens. The start token is at index 0 and the end
+        token is at index -1. These are stripped out before calculating the
+        pairwise distances.
 
     Returns
     -------

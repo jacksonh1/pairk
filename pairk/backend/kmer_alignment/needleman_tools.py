@@ -39,7 +39,11 @@ def kmer_align_aligner(
     sequence: str,
     aligner: Align.PairwiseAligner,
 ) -> Alignment:
-    alignment = aligner.align(Seq.Seq(sequence), Seq.Seq(kmer))[0]
+    try:
+        alignment = aligner.align(Seq.Seq(sequence), Seq.Seq(kmer))[0]
+    except ValueError as e:
+        print(f"value error trying to align {kmer} to {sequence}")
+        raise e
     return alignment
 
 

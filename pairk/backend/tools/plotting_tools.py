@@ -26,18 +26,17 @@ def plot_score_bar_plot(ax: matplotlib.axes.Axes, score_list: list, query_seq: s
     return ax
 
 
-def _format_bar_plot(ax, xlabel_sequence: str, labelsize=16):
+def _format_bar_plot(ax, xlabel_sequence: str):
     """format bar plot"""
     _ = ax.set_xticks(
         list(range(len(xlabel_sequence))),
         labels=list(xlabel_sequence),
     )
     ax.set_xlim(-0.5, len(xlabel_sequence) - 0.5)
-    # ax.tick_params(axis="x", which="major", labelsize=labelsize)
     return ax
 
 
-def plot_logo(ax, str_list, tick_label_str, labelsize=16):
+def plot_logo(ax, str_list, tick_label_str):
     counts = pssms.alignment_2_counts(str_list)
     lm.Logo(counts, color_scheme="chemistry", ax=ax)
     ax.set_ylim(0, len(str_list))
@@ -45,7 +44,6 @@ def plot_logo(ax, str_list, tick_label_str, labelsize=16):
         list(range(len(str_list[0]))),
         labels=list(tick_label_str),
     )
-    # ax.tick_params(axis="x", which="major", labelsize=labelsize)
     return ax
 
 

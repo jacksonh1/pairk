@@ -40,13 +40,13 @@ def run_pairwise_kmer_alignment_needleman(
             score_df.loc[position, ortholog_id] = best_score
             orthokmer_df.loc[position, ortholog_id] = best_subseq  # type: ignore
             pos_df.loc[position, ortholog_id] = best_pos
-            (
-                reci_best_score,
-                reci_best_subseq,
-                _,
-            ) = needleman_tools.score_kmer_2_seq_needleman(
-                best_subseq, query_idr, aligner  # type: ignore
-            )
+            # (
+            #     reci_best_score,
+            #     reci_best_subseq,
+            #     _,
+            # ) = needleman_tools.score_kmer_2_seq_needleman(
+            #     best_subseq, query_idr, aligner  # type: ignore
+            # )
     return score_df, orthokmer_df, pos_df
 
 

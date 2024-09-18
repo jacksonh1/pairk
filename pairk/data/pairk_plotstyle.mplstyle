@@ -19,7 +19,7 @@ patch.linewidth : 1
 patch.force_edgecolor : True
 lines.linewidth : 1.5
 
-font.size : 18
+font.size : 16
 font.family : sans-serif
 font.sans-serif : Arial
 figure.figsize : 6.5, 6.5
