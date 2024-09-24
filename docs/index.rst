@@ -2,7 +2,11 @@
    sphinx-quickstart on Thu Mar 15 13:55:56 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
+   .. :maxdepth: 2
+   .. :hidden:
+   .. :titlesonly:
 
+=========================================================
 Welcome to pairk's documentation!
 =========================================================
 
@@ -25,12 +29,12 @@ repository link - https://github.com/jacksonh1/pairk
 
       
 
-    .. grid-item-card::  User Guide
+    .. grid-item-card::  PairK Tutorial
       :margin: 0 3 0 0
       
       An in-depth guide for users.
 
-      .. button-link:: ./user_guide.html
+      .. button-link:: ./pairk_tutorial_simplified.html
          :color: primary
          :outline:
          :expand:
@@ -69,11 +73,12 @@ repository link - https://github.com/jacksonh1/pairk
 
 .. toctree::
    :maxdepth: 2
-   :hidden:
-   :titlesonly:
 
    getting_started
-   user_guide
+   notebooks_rst/pairk_tutorial_simplified.rst
+   k_mer_alignment
    api
    references
 
+
+.. user_guide

@@ -316,7 +316,7 @@ class PairkConservation:
         self,
         position: int,
         score_type: str = "z_score",
-        figsize: tuple[int, int] = (15, 5),
+        figsize: tuple[int, int] = (11, 4),
     ) -> tuple[matplotlib.figure.Figure, dict[str, matplotlib.axes.Axes]]:
         """makes a mosaic plot (with multiple subplots) of the conservation
         scores, sequence logos, and background scores for the pairk

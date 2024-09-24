@@ -1,3 +1,4 @@
+===============================
 References and acknowledgements
 ===============================
 
@@ -5,8 +6,9 @@ special thanks to Foster Birnbaum for help accelerating the embedding distance f
 
 Python modules utilized by PairK are documented in the requirements
 
+**********************
 Additional references:
-----------------------
+**********************
 
 * ESM2 (the model used to generate the embeddings): 
 

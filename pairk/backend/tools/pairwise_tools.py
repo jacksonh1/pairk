@@ -41,7 +41,8 @@ def import_pairwise_matrices(filepath, matrix_keys: list[str] | None = None):
 
 
 class PairkAln:
-    """A class to store the results of the pairwise alignment.
+    """
+    A class to store the results of the pairwise alignment.
 
     The primary data is stored in pandas dataframes. All dataframes have the
     same structure. One column is the query k-mer sequence
@@ -110,7 +111,7 @@ class PairkAln:
             score_df=matrices.get("score_matrix"),
         )
 
-    def get_pseudo_alignment(self, position: int):
+    def get_pseudo_alignment(self, position: int) -> list[str]:
         """get a list of the best scoring k-mers from each ortholog at a given query position.
 
         Parameters

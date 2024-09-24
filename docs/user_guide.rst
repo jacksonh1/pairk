@@ -3,11 +3,14 @@ User Guide
 ========================
 
 .. generate a table of contents for this document
+    .. :depth: 5
+    .. :local:
+
+
 .. contents:: Table of Contents
-    :depth: 5
-    :local:
 
 see the `tutorial notebook <https://github.com/jacksonh1/pairk/blob/main/demo/pairk_tutorial.ipynb>`_ for an interactive version of the guide (most of the code examples are taken from the notebook), where you can see the outputs of the code cells, the plots, and run the code yourself. The docstrings for the functions/classes look a bit better here though.
+
 
 ********
 Overview
@@ -301,6 +304,8 @@ example: save the results to a file using ``write_to_file`` and load them back i
     aln_results = pairk.PairkAln.from_file('./aln_results.json')
     print(aln_results)
 
+
+----------------
 
 Step 2: k-mer conservation
 =================================

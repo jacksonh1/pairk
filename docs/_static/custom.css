@@ -1,0 +1,20 @@
+div.highlight-ipython3 {
+    background-color: #aaa9ab;
+    padding: 3px;
+    /*border: 1px solid #d3d3d3;*/
+    /* border: 1px solid #535154; */
+    border-radius: 3px;
+    margin-bottom: 10px !important;
+    margin-top: 10px !important;
+}
+
+/* Style for output blocks */
+div.highlight-default {
+    /* background-color: #ffe229 !important; */
+    /* White background for output */
+    /* padding: 3px !important;
+    border-left: 5px solid #f5f5f5 !important; */
+    /* Left border for output */
+    margin-left: 20px !important;
+    margin-bottom: 15px !important;
+}

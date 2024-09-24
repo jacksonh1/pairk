@@ -1,3 +1,4 @@
+===============
 Getting Started
 ===============
 
@@ -20,8 +21,9 @@ or for an editable install that you can modify:
     pip install -e .
 
 
+**************
 Pairk Overview
-""""""""""""""
+**************
 
 The pairk pipeline:
 
@@ -48,7 +50,7 @@ SLiM conservation from an MSA vs. pairk:
 
 
 1: Pairwise k-mer alignment
-"""""""""""""""""""""""""""""""""
+=================================
 
 For each k-mer in the query IDR, step 1 finds the best scoring length k fragment from each homolog IDR in a gapless and pairkwise manner. The position, sequence, and score of the best scoring fragments are stored in the results.
 
@@ -65,7 +67,7 @@ in informal pseudocode, the algorithm looks like this:
 
 
 2: k-mer conservation
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+=================================
 
 For each k-mer "pseudo-MSA" from step 1, step 2 calculates the conservation of each position in the pseudo-MSA using a column-wise scoring function. The scores are then converted to z-scores to give the conservation relative to other residues in the query IDR. The z-score background distribution is all of the column-wise scores from all of the pseudo-MSAs.
 
@@ -77,8 +79,9 @@ For each k-mer "pseudo-MSA" from step 1, step 2 calculates the conservation of e
     Convert all scores for all k-mer pseudo-MSAs to z-scores
 
 
+**********
 quickstart
-""""""""""
+**********
 
 Here's a quick example to get you started:
 
@@ -92,23 +95,90 @@ Here's a quick example to get you started:
     # Perform k-mer alignment
     aln_results = pairk.pairk_alignment(idr_dict=ex1.idr_dict, query_id=ex1.query_id, k=5, matrix_name="EDSSMat50")
 
+
+The resulting pseudo-MSAs are stored in the ``aln_results`` object (an instance of the :class:`pairk.PairkAln` class). You can access the results from this object's attributes directly (i.e. the :attr:`pairk.PairkAln.orthokmer_matrix`, :attr:`pairk.PairkAln.position_matrix`, and :attr:`pairk.PairkAln.score_matrix` DataFrames). 
+
+Let's say that we are interested in the k-mer "LPPPP" which starts at position 75 in the query sequence. We can access the "pseudo-MSA" for this k-mer from the :attr:`pairk.PairkConservation.orthokmer_matrix` DataFrame or using the :attr:`pairk.PairkConservation.get_pseudo_alignment()` method:
+
+.. code-block:: python
+
+    In [4]: print(aln_results.get_pseudo_alignment(75))
+    ['LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'PPMPP', 'LPPPP', 'LPDRP', 'APSPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'IPPPP']
+
+    In [5]: print(aln_results.orthokmer_matrix.loc[4])
+    query_kmer          TVNAA
+    9793_0:005123       TGNAA
+    1706337_0:000fc7    TVNAA
+    51337_0:001b5a      TVNTA
+    9568_0:004ae1       TVNAA
+    43346_0:004190      TVNAV
+    885580_0:00488c     TVNTA
+    10181_0:00305d      TVSTA
+    1415580_0:000900    NVNAN
+    61221_0:00105a      AVSAG
+    7897_0:0033c5       TVSAS
+    8407_0:002bff       SQNVA
+    173247_0:004550     TPNQA
+    30732_0:0046dd      TVKAK
+    241271_0:0048e4     PVNSF
+    8103_0:0045e4       PLNAL
+    56723_0:00152f      TAAAA
+    210632_0:004c0c     TIKAK
+    31033_0:00264e      TIKAS
+    63155_0:004c86      TVKAK
+    7994_0:004d71       TSNTS
+    109280_0:00369f     TTAAA
+    150288_0:004e5a     NLNSQ
+    Name: 4, dtype: object
+
+
+To calculate pairk conservation, an instance of the :class:`pairk.PairkAln` object is used as input to the :func:`pairk.calculate_conservation` function.
+
+.. code-block:: python
+
     # Calculate conservation
     conservation_results = pairk.calculate_conservation(aln_results)
 
-    # Plot conservation scores
-    conservation_results.plot_conservation_mosaic(position=0)
+The conservation results are stored in ``conservation_results`` (an instance of the :class:`pairk.PairkConservation` class). You can access the results from this object's attributes (e.g. the :attr:`pairk.PairkConservation.orthokmer_arr`, :attr:`pairk.PairkConservation.score_arr`, and :attr:`pairk.PairkConservation.z_score_arr` arrays)
 
+The :class:`pairk.PairkConservation` object also contains some plotting functions. for example, :func:`pairk.PairkConservation.plot_conservation_mosaic`:
+
+.. code-block:: python
+
+    # Plot conservation scores
+    conservation_results.plot_conservation_mosaic(position=75) # start position of the query k-mer of interest
+
+
+.. image:: ./images/mosaic_plot_annotated.png
+    :align: center
+    :width: 800
+
+
+|
+
+The above example output of the :func:`pairk.PairkConservation.plot_conservation_mosaic` is annotated with explanation of each element of the plot
+
+The :class:`pairk.PairkConservation` also has methods to write the results to a file or read the results from a file:
+ 
+.. code-block:: python
+    
     # save the results
     conservation_results.write_to_file('example1_results.npz')
 
+    # read the results
+    conservation_results = pairk.PairkConservation.read_results_from_file('example1_results.npz')
 
-Check out PairK's main functions and classes:
+
+
+*********************************************
+PairK's main functions and classes
+*********************************************
 
 * step 1, pairwise k-mer alignment functions
 
     * :func:`pairk.pairk_alignment` - uses a scoring matrix to align the k-mers to each homolog
     * :func:`pairk.pairk_alignment_needleman` - uses a scoring matrix to align the k-mers to each homolog (use pairk.make_aligner to create the aligner object before using this function)
-    * :func:`pairk_alignment_embedding_distance` - uses embeddings from ESM2 to align the k-mers to each homolog. (use pairk.ESM_Model to load the model before using this function)
+    * :func:`pairk.pairk_alignment_embedding_distance` - uses embeddings from ESM2 (or user provided embeddings) to align the k-mers to each homolog. To use ESM2, use :func:`pairk.ESM_Model` to load the model before using this function (provided as the ``mod`` argument)
     * :class:`pairk.PairkAln` - pairkwise k-mer alignment results are returned as an instance of this class. See the associated methods for more details on how to interact with the results.
 
 * step 2, k-mer conservation functions
@@ -123,7 +193,7 @@ Check out PairK's main functions and classes:
     * :class:`pairk.FastaImporter` - class to import fasta files and return the sequences in different formats
 
 
-see the `User Guide <https://pairk.readthedocs.io/en/latest/user_guide.html>`_ page for more details on how to use pairk.
+.. see the `User Guide <https://pairk.readthedocs.io/en/latest/user_guide.html>`_ page for more details on how to use pairk.
 
 See our `tutorial notebook <https://github.com/jacksonh1/pairk/blob/main/demo/pairk_tutorial.ipynb>`_ for a notebook-based tutorial on how to use pairk.
 

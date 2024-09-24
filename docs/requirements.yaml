@@ -18,12 +18,15 @@ dependencies:
   - sphinxcontrib-qthelp
   - sphinxcontrib-serializinghtml
   - pydata-sphinx-theme
-  - numpy
+  - nbsphinx
+  - numpy<2
+  - jupyter
   - pandas
   - biopython
   - importlib-resources
   - seaborn
   - matplotlib
+  - numpydoc
     # Pip-only installs
   - pip:
     - -e ../
