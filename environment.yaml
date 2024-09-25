@@ -12,6 +12,7 @@ dependencies:
   - biopython>=1.80
   - seaborn
   - matplotlib
+  - importlib-resources
   - pip:
     - alfpy
     - logomaker
