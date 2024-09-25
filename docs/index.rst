@@ -13,7 +13,7 @@ Welcome to pairk's documentation!
 repository link - https://github.com/jacksonh1/pairk
 
 
-.. grid:: 1 1 4 1
+.. grid:: 1 1 5 1
 
     .. grid-item-card:: Getting Started
       :margin: 0 3 0 0
@@ -39,8 +39,20 @@ repository link - https://github.com/jacksonh1/pairk
          :outline:
          :expand:
 
-         To the User Guide
+         To the PairK Tutorial
       
+      
+    .. grid-item-card::  Examples
+      :margin: 0 3 0 0
+      
+      Examples using pairk and how to interpret the results
+
+      .. button-link:: ./notebooks/pairk_examples.html
+         :color: primary
+         :outline:
+         :expand:
+
+         To the Examples
       
 
     .. grid-item-card:: API Reference
@@ -76,6 +88,7 @@ repository link - https://github.com/jacksonh1/pairk
 
    getting_started
    notebooks_rst/pairk_tutorial_simplified.rst
+   notebooks/pairk_examples
    k_mer_alignment
    api
    references

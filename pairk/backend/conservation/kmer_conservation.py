@@ -153,6 +153,21 @@ class PairkConservation:
             f"{self.n_bg_kmers} kmers used for z-score calculation"
         )
 
+    def find_query_kmer_positions(self, kmer: str):
+        """convenience function to search for the positions of a k-mer string.
+
+        Parameters
+        ----------
+        kmer : str
+            the k-mer string to search for.
+
+        Returns
+        -------
+        list[int]
+            the positions in the query sequence that match the input kmer.
+        """
+        return [i for i, x in enumerate(self.query_kmers) if x == kmer]
+
     def get_average_score(
         self,
         position: int,

@@ -954,7 +954,7 @@ takes a string of residues (a column of an alignment) as an input and
 returns a float (conservation score). You can use custom functions here,
 but pairk comes with a few built-in functions from Capra and Singh 2007
 (DOI: 10.1093/bioinformatics/btm270) available in the
-:module:`pairk.capra_singh_functions` module. The
+``pairk.capra_singh_functions`` module. The
 :func:`pairk.capra_singh_functions.property_entropy` is the default function
 used by :func:`pairk.calculate_conservation`.
 
@@ -1081,7 +1081,7 @@ example usage: plotting conservation scores
 .. code:: ipython3
 
     fig, ax = plt.subplots(figsize=(7,1.5))
-    conservation_results.plot_score_barplot(k_mer_position, ax=ax)
+    conservation_results.plot_score_barplot(k_mer_position, score_type='score', ax=ax)
     ax.set_title('conservation scores')
     fig, ax = plt.subplots(figsize=(7,1.5))
     conservation_results.plot_score_barplot(k_mer_position, score_type='z_score', ax=ax)
