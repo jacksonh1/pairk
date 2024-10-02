@@ -1,10 +1,12 @@
+.. _getting_started:
+
 ===============
 Getting Started
 ===============
 
 Pairk is a Python package designed to quantify the conservation of short motifs in disordered regions, where traditional multiple sequence alignments (MSAs) are difficult. It takes a sequence of interest (the query) and a set of homologous sequences as input and quantifies the conservation of the query sequence without using an MSA. Pairk is designed to be simple to use and easy to install.
 
-See our manuscript for more details on the method: <coming soon>
+See our manuscript for more details on the method: `PairK: Pairwise k-mer alignment for quantifying protein motif conservation in disordered regions <https://www.biorxiv.org/content/10.1101/2024.07.23.604860v1>`_
 
 to install
 
@@ -105,32 +107,31 @@ Let's say that we are interested in the k-mer "LPPPP" which starts at position 7
     In [4]: print(aln_results.get_pseudo_alignment(75))
     ['LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'PPMPP', 'LPPPP', 'LPDRP', 'APSPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'LPPPP', 'IPPPP']
 
-    In [5]: print(aln_results.orthokmer_matrix.loc[4])
-    query_kmer          TVNAA
-    9793_0:005123       TGNAA
-    1706337_0:000fc7    TVNAA
-    51337_0:001b5a      TVNTA
-    9568_0:004ae1       TVNAA
-    43346_0:004190      TVNAV
-    885580_0:00488c     TVNTA
-    10181_0:00305d      TVSTA
-    1415580_0:000900    NVNAN
-    61221_0:00105a      AVSAG
-    7897_0:0033c5       TVSAS
-    8407_0:002bff       SQNVA
-    173247_0:004550     TPNQA
-    30732_0:0046dd      TVKAK
-    241271_0:0048e4     PVNSF
-    8103_0:0045e4       PLNAL
-    56723_0:00152f      TAAAA
-    210632_0:004c0c     TIKAK
-    31033_0:00264e      TIKAS
-    63155_0:004c86      TVKAK
-    7994_0:004d71       TSNTS
-    109280_0:00369f     TTAAA
-    150288_0:004e5a     NLNSQ
-    Name: 4, dtype: object
-
+    In [5]: print(aln_results.orthokmer_matrix.loc[75])
+    query_kmer          LPPPP
+    9793_0:005123       LPPPP
+    1706337_0:000fc7    LPPPP
+    51337_0:001b5a      LPPPP
+    9568_0:004ae1       PPMPP
+    43346_0:004190      LPPPP
+    885580_0:00488c     LPDRP
+    10181_0:00305d      APSPP
+    1415580_0:000900    LPPPP
+    61221_0:00105a      LPPPP
+    7897_0:0033c5       LPPPP
+    8407_0:002bff       LPPPP
+    173247_0:004550     LPPPP
+    30732_0:0046dd      LPPPP
+    241271_0:0048e4     LPPPP
+    8103_0:0045e4       LPPPP
+    56723_0:00152f      LPPPP
+    210632_0:004c0c     LPPPP
+    31033_0:00264e      LPPPP
+    63155_0:004c86      LPPPP
+    7994_0:004d71       LPPPP
+    109280_0:00369f     LPPPP
+    150288_0:004e5a     IPPPP
+    Name: 75, dtype: object
 
 To calculate pairk conservation, an instance of the :class:`pairk.PairkAln` object is used as input to the :func:`pairk.calculate_conservation` function.
 

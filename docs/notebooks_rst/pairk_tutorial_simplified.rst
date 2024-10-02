@@ -1210,7 +1210,7 @@ advanced customization
 Step 1 and Step 2 can be modified, but this requires a bit of knowledge
 of the inner workings of the pairk package and the source code would
 have to be modified directly and probably installed in editable mode
-(see ``Installation``\ \_). If you want to modify the package, here’s
+(see :ref:`Getting Started <getting_started>`). If you want to modify the package, here’s
 roughly how I organized the code in the ``pairk`` directory (the source
 code is available on `github <https://github.com/jacksonh1/pairk/>`__.
 Below file paths are relative to the github repo root directory:
