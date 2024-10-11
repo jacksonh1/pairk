@@ -4,7 +4,10 @@
 Getting Started
 ===============
 
-Pairk is a Python package designed to quantify the conservation of short motifs in disordered regions, where traditional multiple sequence alignments (MSAs) are difficult. It takes a sequence of interest (the query) and a set of homologous sequences as input and quantifies the conservation of the query sequence without using an MSA. Pairk is designed to be simple to use and easy to install.
+Pairk is a Python package designed to quantify the per-residue conservation of short linear motifs (SLiMs) in disordered regions, where traditional multiple sequence alignments (MSAs) are often unreliable. It takes a sequence of interest (the query), a set of homologous sequences, and a length of sequence fragments to analyze (k) as inputs. PairK then generates "pseudo MSAs" for all fragments in the query sequence by gapless pairwise alignment. It then calculatees relative conservation scores for each residue in each query fragment from the pseudo MSAs.
+
+PairK is founded on the idea that disordered sequences are generally unconserved (on a sequence level) but contain short, positionally conserved fragments that are important for function (SLiMs). Global alignments of disordered sequences tend to misalign these conserved fragments. PairK is designed to focus on the per-position conservation of fragments within a sequence, rather than the entire sequence, to better capture the conservation of these motifs.
+
 
 See our manuscript for more details on the method: `PairK: Pairwise k-mer alignment for quantifying protein motif conservation in disordered regions <https://www.biorxiv.org/content/10.1101/2024.07.23.604860v1>`_
 
