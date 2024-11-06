@@ -9,8 +9,39 @@ motif conservation in IDRs through pairwise k-mer alignment
 
 This work was supported by the National Institutes of Health under Award Number R35GM149227. The content is solely the responsibility of the authors and does not necessarily represent the official views of the National Institutes of Health.
 
+
 [repository link](https://github.com/jacksonh1/pairk)
-<br>[pairk documentation](https://pairk.readthedocs.io/en/latest/)
+
+<!-- ## [documentation](https://pairk.readthedocs.io/en/latest/) -->
+<!-- 
+<div align="center">
+  <a href="https://pairk.readthedocs.io/en/latest/">
+    <img src="https://img.shields.io/badge/📚_View_Full_Documentation-blue?style=for-the-badge" alt="View Full Documentation" />
+  </a>
+</div> -->
+
+<!-- <p align="center">
+  <a href="https://pairk.readthedocs.io/en/latest/" style="font-size: 24px; font-weight: bold; color: #0366d6; text-decoration: none;">
+    📚 Link to full Documentation
+  </a>
+</p> -->
+
+
+<!-- > ### [📚 Explore Our Comprehensive Documentation](https://your-docs-link.com) -->
+
+<!-- | 📚 Documentation | -->
+<!-- |:--------: | -->
+<!-- | [![Documentation](https://img.shields.io/badge/View_Full_Documentation-blue?style=for-the-badge&logo=github)](https://your-docs-link.com) | -->
+
+<!-- **[🔍 Dive into our Detailed Documentation](https://your-docs-link.com)** -->
+
+
+### Documentation
+- See the official documentation on readthedocs - [https://pairk.readthedocs.io](https://pairk.readthedocs.io/en/latest/)
+- Also See the demo/tutorial jupyter notebook - [./demo/pairk_tutorial.ipynb](https://github.com/jacksonh1/pairk/blob/main/demo/pairk_tutorial.ipynb)
+
+
+
 
 ### Features
 Quantify the relative conservation of a small sequence motif in intrinsically disordered regions (IDRs) of proteins, without the need for a multiple sequence alignment (MSA).
@@ -27,7 +58,10 @@ Example - PairK vs MSA conservation:
 
 
 <!-- See the demo/tutorial jupyter notebook here: [demo/pairk_tutorial.ipynb](demo/pairk_tutorial.ipynb) -->
-See the demo/tutorial jupyter notebook here: [demo/pairk_tutorial.ipynb](https://github.com/jacksonh1/pairk/blob/main/demo/pairk_tutorial.ipynb)
+
+
+
+
 
 <!-- ![PairK vs MSA conservation](docs/images/f1-example_MSA_problems.png) -->
 
@@ -92,13 +126,6 @@ or for an editable install that you can modify:
 ```bash
 pip install -e .
 ```
-
-
-### Documentation
-see the [pairk documentation](https://pairk.readthedocs.io/en/latest/).
-
-Also see our jupyter notebook tutorial in the `demo` folder.
-
 
 ### Copyright
 Copyright (c) 2024, Jackson Halpin
