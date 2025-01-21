@@ -43,6 +43,8 @@ def kmer_align_aligner(
         alignment = aligner.align(Seq.Seq(sequence), Seq.Seq(kmer))[0]
     except ValueError as e:
         print(f"value error trying to align {kmer} to {sequence}")
+        # add string to error
+        e.args = (f"Error trying to align {kmer} to {sequence}",) + e.args
         raise e
     return alignment
 
